@@ -1,103 +1,400 @@
+"use client";
+import { useState } from "react";
+import "./sarahstyle.css";
+import Link from "next/link";
 import Image from "next/image";
+//import Script from "./sarah.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { Abril_Fatface } from "next/font/google";
 
-export default function Home() {
+const abrilFatface = Abril_Fatface({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-abril-fatface", // Optional: for CSS variable usage
+});
+
+export function TabSection({
+  inputType,
+  setInputType,
+  adultCount,
+  setAdultCount,
+  childCount,
+  setChildCount,
+}) {
+  const [activeTab, setActiveTab] = useState("tickets");
+  const [showTravelerPopup, setShowTravelerPopup] = useState(false);
+  const [travelerSummary, setTravelerSummary] = useState("");
+  const applyTravelerSelection = () => {
+    const summary = `${adultCount} Adult${adultCount > 1 ? "s" : ""}${
+      childCount > 0
+        ? `, ${childCount} Child${childCount > 1 ? "ren" : ""}`
+        : ""
+    }`;
+    setTravelerSummary(summary);
+    setShowTravelerPopup(false);
+    console.log("Travelers:", { adults: adultCount, children: childCount });
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="wrapper">
+      <div className="tab-container">
+        {/* Tabs */}
+        <div className="tabs">
+          <button
+            className={`tab ${activeTab === "tickets" ? "active" : ""}`}
+            onClick={() => setActiveTab("tickets")}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Tickets
+          </button>
+          <button
+            className={`tab ${activeTab === "todo" ? "active" : ""}`}
+            onClick={() => setActiveTab("todo")}
           >
-            Read our docs
-          </a>
+            Things to do
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        {/* Tab Content */}
+        {activeTab === "tickets" && (
+          <div id="tickets" className="tab-content active">
+            <form
+              id="ticketFormTickets"
+              className="listsofinput"
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log("Form submitted");
+              }}
+            >
+              <div>
+                <input
+                  type="text"
+                  id="destination"
+                  name="destination"
+                  placeholder="Where to?"
+                  className="image-label1"
+                />
+              </div>
+              <div>
+                <input
+                  type={inputType}
+                  id="travelDate"
+                  placeholder="Date"
+                  onFocus={() => setInputType("date")}
+                  onBlur={(e) => {
+                    if (e.target.value === "") setInputType("text");
+                  }}
+                  className="image-label2"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  id="travelerInput"
+                  readOnly
+                  value={travelerSummary}
+                  placeholder="Traveller"
+                  className="image-label3"
+                  onClick={() => setShowTravelerPopup(true)}
+                />
+              </div>
+              <div>
+                <button type="submit" className="btn-ticket">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+        {activeTab === "todo" && (
+          <div id="todo" className="tab-content">
+            <p>Stay tuned for upcoming feature...</p>
+          </div>
+        )}
+        {/* Traveler Popup */}
+        {showTravelerPopup && (
+          <div id="travelerPopup" className="popup-panel">
+            <h2>Select Travelers</h2>
+            <label htmlFor="adultCount">Adults:</label>
+            <br />
+            <input
+              type="number"
+              id="adultCount"
+              min="1"
+              value={adultCount}
+              onChange={(e) => setAdultCount(Number(e.target.value))}
+            />
+            <br />
+            <br />
+            <label htmlFor="childCount">Children:</label>
+            <br />
+            <input
+              type="number"
+              id="childCount"
+              min="0"
+              value={childCount}
+              onChange={(e) => setChildCount(Number(e.target.value))}
+            />
+            <br />
+            <br />
+            <button
+              type="button"
+              onClick={() => {
+                applyTravelerSelection();
+                setShowTravelerPopup(false);
+              }}
+            >
+              Apply
+            </button>
+          </div>
+        )}
+      </div>
     </div>
+  );
+}
+
+export default function RootLayout() {
+  const [inputType, setInputType] = useState("text");
+  const [adultCount, setAdultCount] = useState(1);
+  const [childCount, setChildCount] = useState(0);
+
+  return (
+    <>
+      {/* page wide picture */}
+      <div className="container-home bgimg">
+        <div className="row justify-content-center align-items-center content-mid">
+          <div className="col-md-10 text-center">
+            <h1
+              className="heading mb-4 aos-init aos-animate"
+              data-aos="fade-up"
+            >
+              Travel Packages
+            </h1>
+            <p
+              className="sub-heading mb-5 aos-init aos-animate"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              Where is your dream vacation? Explore our
+              <Link href="/vacation" target="_blank">
+                Vacation Package
+              </Link>
+              and share!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* tab contents here */}
+      <TabSection
+        inputType={inputType}
+        setInputType={setInputType}
+        adultCount={adultCount}
+        setAdultCount={setAdultCount}
+        childCount={childCount}
+        setChildCount={setChildCount}
+      />
+
+      {/* Featured Section */}
+      <div className="container">
+        <h1 className={`featured ${abrilFatface.className}`}>
+          Featured Destinations
+        </h1>
+        <div id="carouselExampleCaptions" className="carousel slide">
+          {/* <div class="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="0"
+            class="active"
+            aria-current="true"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            type="button"
+            data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"
+          ></button>
+        </div> */}
+          <div className="carousel-inner">
+            <div className="carousel-item active">
+              <Image
+                src="/featured1.webp"
+                className="d-block w-100"
+                alt="..."
+                width={1300}
+                height={500}
+              />
+              <div className="carousel-caption d-none d-md-block caption">
+                <h5>First slide label</h5>
+                <p>
+                  Some representative placeholder content for the first slide.
+                </p>
+              </div>
+            </div>
+            <div className="carousel-item">
+              <Image
+                src="/featured2.webp"
+                className="d-block w-100"
+                alt="..."
+                width={1300}
+                height={500}
+              />
+              <div className="carousel-caption d-none d-md-block caption">
+                <h5>Second slide label</h5>
+                <p>
+                  Some representative placeholder content for the second slide.
+                </p>
+              </div>
+            </div>
+            <div className="carousel-item">
+              <Image
+                src="/featured3.jpg"
+                className="d-block w-100"
+                alt="..."
+                width={1300}
+                height={500}
+              />
+              <div className="carousel-caption d-none d-md-block caption">
+                <h5>Third slide label</h5>
+                <p>
+                  Some representative placeholder content for the third slide.
+                </p>
+              </div>
+            </div>
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="prev"
+            >
+              <span
+                className="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Previous</span>
+            </button>
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="next"
+            >
+              <span
+                className="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* deal zone */}
+      <div className="container">
+        <h1
+          className={`featured ${abrilFatface.className}`}
+          style={{ marginTop: "50px" }}
+        >
+          Deal Zone
+        </h1>
+        <div className="dealimg">
+          <Image
+            src="/deal1.webp"
+            style={{ borderRadius: "10px 10px 10px 80px" }}
+            width={325}
+            height={330}
+            alt="..."
+          />
+          <Image
+            src="/deal2.webp"
+            style={{ borderRadius: "10px" }}
+            width={325}
+            height={330}
+            alt="..."
+          />
+          <Image
+            src="/deal3.webp"
+            style={{ borderRadius: "10px" }}
+            width={325}
+            height={330}
+            alt="..."
+          />
+          <Image
+            src="/deal4.webp"
+            style={{ borderRadius: "10px 80px 10px 10px" }}
+            width={325}
+            height={330}
+            alt="..."
+          />
+        </div>
+        <div className="dealinfo">
+          <div className="dealdetail">
+            <div className="tagline">SLS BAHA MAR</div>
+            <h4>4th Night Free and up to $250 resort credit</h4>
+            <p>Expires: December 21, 2025</p>
+            <Link
+              href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
+              target="_blank"
+            >
+              <button type="submit" className="dealbutton">
+                More Detail
+              </button>
+            </Link>
+          </div>
+          <div className="dealdetail">
+            <div className="tagline">
+              Margaritaville Beach Resort, Nassau, Bahamas
+            </div>
+            <h4>Save 25% </h4>
+            <p>Expires: December 21, 2025</p>
+            <Link
+              href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
+              target="_blank"
+            >
+              <button type="submit" className="dealbutton">
+                More Detail
+              </button>
+            </Link>
+          </div>
+          <div className="dealdetail">
+            <div className="tagline">Comfort Suites Paradise Island</div>
+            <h4>
+              4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
+              Free! Includes access to Atlantis Paradise Island Plus up to $100
+              Resort Credit
+            </h4>
+            <p>Expires: December 21, 2025</p>
+            <Link
+              href="https://www.comfortsuitespi.com/specials"
+              target="_blank"
+            >
+              <button type="submit" className="dealbutton">
+                More Detail
+              </button>
+            </Link>
+          </div>
+          <div className="dealdetail">
+            <div className="tagline">British Colonial Nassau</div>
+            <h4>Save 15% + $300 Resort Credit</h4>
+            <p>Expires: December 21, 2025</p>
+            <Link
+              href="https://www.britishcolonial.com/special-offers.htm"
+              target="_blank"
+            >
+              <button type="submit" className="dealbutton">
+                More Detail
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
