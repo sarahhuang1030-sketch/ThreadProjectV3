@@ -247,21 +247,24 @@ h3 {
 .big-container {
   position: relative;
   width: 0px auto;
+  /* display: flex;
+  justify-content: center; */
 }
 
 .person-info {
-  width: 800px;
+  /* width: 800px; */
   padding: 20px;
-  justify-items: center;
+  /* justify-items: center; */
 }
 
 .image img {
-  width: 200px;
+  width: 260x;
   height: 300px;
 }
 
 .text {
   padding: 20px;
+  width: 960px;
 }
 
 /* header page for vacation pacakage - vacation.html */
@@ -437,4 +440,17 @@ h3 {
   left: 250px;
   box-shadow: 5px 5px 5px rgb(225, 142, 142);
   padding: 10px;
+}
+
+/* Sarah's contact us form styling */
+.form-group1 {
+  position: relative;
+  font-size: 24px;
+  line-height: 2;
+  flex: 1; /* Allows form groups to take up equal available space */
+  color: #6c757d;
+}
+
+.form-group1 input {
+  width: 165px;
 }

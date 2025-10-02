@@ -95,7 +95,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/vacation-package"
-                  className="text-secondaryt text-decoration-none"
+                  className="text-secondary text-decoration-none"
                 >
                   Vacation Package
                 </Link>
