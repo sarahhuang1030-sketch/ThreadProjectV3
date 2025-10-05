@@ -1,0 +1,40 @@
+/* carousel item styles */
+.carousel-item {
+  position: relative;
+  height: 500px;
+}
+
+.carousel-item-inner {
+  position: relative;
+  height: 100%;
+}
+
+/* carousel caption styles */
+.custom-caption {
+  bottom: 20%;
+}
+
+/* card group styles */
+.card-group {
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.card-img-container {
+  position: relative;
+  height: 200px;
+}
+
+/* text center styles */
+.text-center {
+  text-align: center;
+}
+
+/* text color */
+.text-dark-green {
+  color: #4d4c0d;
+}
