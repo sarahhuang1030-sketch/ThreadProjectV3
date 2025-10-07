@@ -8,7 +8,7 @@ export default function AgencyList({ agencies, showActions = false }) {
           className="bg-white rounded-lg shadow-md p-6"
         >
           <div className="text-xl font-semibold text-gray-900 mb-2">
-            Branch {agencies.AgencyId}
+            {agencies.AgncyCity}
           </div>
           <p className="text-gray-600 mb-1">
             <strong>Address</strong> {agencies.AgncyAddress}
