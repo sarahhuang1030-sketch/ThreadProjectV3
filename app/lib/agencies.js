@@ -34,3 +34,28 @@ export async function getAgentsbyId2() {
     throw error;
   }
 }
+//this is for the contact form
+export async function createUser({ name, phone, email, message }) {
+  //check if name and email are undefined
+  //these are required fields
+  if (!name?.trim() || !phone?.trim() || !email?.trim() || !message?.trim())
+    throw new Error("Please enter the required field");
+
+  //check if the email is unique
+  const [existing] = await db.query(
+    "SELECT id FROM contact_messages where email = ?",
+    [email]
+  );
+
+  if (existing.length > 0)
+    throw new Error("Customer with this email already exist");
+
+  //otherwise store new user
+  const result = await db.query(
+    "Insert into contact_messages (name, phone, email, message) values(?,?,?,?)",
+    [name, phone, email, message]
+  );
+  //return id of the inserted object
+  console.log(result);
+  return { id: result.insertid };
+}

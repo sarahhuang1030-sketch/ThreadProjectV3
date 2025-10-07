@@ -7,6 +7,7 @@ import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
+import { UserCommentAction } from "../lib/action";
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -53,8 +54,7 @@ export function ContactForm() {
         <div className="row">
           <div className="col-md-7 ">
             <form
-              //action="/api/contact"
-              method="POST"
+              action={UserCommentAction}
               className={`bg-white p-md-5 p-4 mb-5 ${abrilFatface.className}`}
             >
               <div className="row">

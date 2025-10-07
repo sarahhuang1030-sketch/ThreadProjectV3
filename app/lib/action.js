@@ -3,15 +3,26 @@
 
 //db will take the default export from database.js
 //which is our database connection
-import db from "./database.js";
+"use server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createUser } from "./agencies";
+//UserCommentAction
 
-//function to get all users
-export async function getAgencies() {
-  const [agencies] = await db.query("SELECT * FROM agencies");
-  console.log(agencies);
+export async function UserCommentAction(formData) {
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const phone = formData.get("phone");
+  const message = formData.get("message");
 
-  //   const [agents] = await db.query("select * from agents where agencyid=1");
-  //   console.log(agents);
-  return agencies;
+  await createUser({
+    name,
+    phone,
+    email,
+    message,
+  });
+
+  //refreshes or updates the page by fetching from the database
+  revalidatePath("/contact");
+  redirect("/");
 }
-//getAgencies();
