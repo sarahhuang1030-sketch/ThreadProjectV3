@@ -123,7 +123,10 @@ export function ContactForm() {
               >
                 <p>
                   <span className="d-block">Address:</span>{" "}
-                  <span> 98 West 21th Street, Suite 721 New York NY 10016</span>
+                  <span>
+                    {" "}
+                    98 West 21th Street, Suite 721 Calgary AB T3K 0D4
+                  </span>
                 </p>
                 <p>
                   <span className="d-block">Phone:</span>{" "}
@@ -152,23 +155,19 @@ export default async function HomePage() {
       <ContactForm />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white ">
-          <h2 className="text-2xl font-semibold mb-6">Branch List</h2>
+          <h2 className="text-2xl font-semibold mb-6">Branches</h2>
           <AgencyList agencies={agencies} />
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white ">
-          <h2 className="text-2xl font-semibold mb-6">
-            Our Agents from Branch 1
-          </h2>
+          <h2 className="text-2xl font-semibold mb-6">Calgary Agents </h2>
           <AgentsList agents={agents1} />
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white ">
-          <h2 className="text-2xl font-semibold mb-6">
-            Our Agents from Branch 2
-          </h2>
+          <h2 className="text-2xl font-semibold mb-6">Okotoks Agents</h2>
           <AgentsList agents={agents2} />
         </div>
       </div>
