@@ -15,6 +15,7 @@ const abrilFatface = Abril_Fatface({
 });
 
 export function TabSection({
+  //inputType, setInputType:controls the travel date input
   inputType,
   setInputType,
   adultCount,
@@ -22,18 +23,24 @@ export function TabSection({
   childCount,
   setChildCount,
 }) {
+  //  setActiveTab tracks which tab is active, and this one sets ticket as default
   const [activeTab, setActiveTab] = useState("tickets");
+  //- showTravelerPopup: toggles the traveler selection popup, and default to not popup
   const [showTravelerPopup, setShowTravelerPopup] = useState(false);
+  //travelerSummary: displays a readable summary, and default set to not display
   const [travelerSummary, setTravelerSummary] = useState("");
+
+  //this shows the counts for adult and chil
   const applyTravelerSelection = () => {
     const summary = `${adultCount} Adult${adultCount > 1 ? "s" : ""}${
       childCount > 0
         ? `, ${childCount} Child${childCount > 1 ? "ren" : ""}`
         : ""
     }`;
+    //updated the preference with counts for adult and child
     setTravelerSummary(summary);
     setShowTravelerPopup(false);
-    console.log("Travelers:", { adults: adultCount, children: childCount });
+    // console.log("Travelers:", { adults: adultCount, children: childCount });
   };
 
   return (
@@ -62,7 +69,7 @@ export function TabSection({
               className="listsofinput"
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log("Form submitted");
+                //   console.log("Form submitted");
               }}
             >
               <div>
@@ -110,7 +117,9 @@ export function TabSection({
             <p>Stay tuned for upcoming feature...</p>
           </div>
         )}
-        {/* Traveler Popup */}
+        {/* Traveler Popup styling */}
+        {/* When travelerInput is clicked, the popup appears:
+         */}
         {showTravelerPopup && (
           <div id="travelerPopup" className="popup-panel">
             <h2>Select Travelers</h2>
@@ -139,6 +148,7 @@ export function TabSection({
             <button
               type="button"
               onClick={() => {
+                //after submit, update the selection
                 applyTravelerSelection();
                 setShowTravelerPopup(false);
               }}
@@ -184,7 +194,7 @@ export default function RootLayout() {
         </div>
       </div>
 
-      {/* tab contents here */}
+      {/* tab contents with the popup here */}
       <TabSection
         inputType={inputType}
         setInputType={setInputType}

@@ -1,9 +1,12 @@
-"use client";
-//import Link from "next/link";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+//import { getAllEmployees } from "../lib/employees";
+//import StatsCard from "../components/StatsCard";
+//import EmployeeList from "../components/EmployeeList";
+import AgencyList from "../components/AgencyList";
+import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
-import { useState } from "react";
+import AgentsList from "../components/AgentsList";
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -43,111 +46,135 @@ export function HeadingPic() {
   );
 }
 
-export default function RootLayout() {
+export function ContactForm() {
   return (
-    <>
-      <HeadingPic />
-      <section className="section ">
-        <div className="container ">
-          <div className="row">
-            <div className="col-md-7 ">
-              <form
-                action="#"
-                method="post"
-                // className="bg-white p-md-5 p-4 mb-5"
-                className={`bg-white p-md-5 p-4 mb-5 ${abrilFatface.className}`}
-              >
-                <div className="row">
-                  <div className="col-md-6 form-group1">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="form-control "
-                    ></input>
-                  </div>
-                  <div className="col-md-6 form-group1">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      type="text"
-                      id="phone"
-                      className="form-control "
-                    ></input>
-                  </div>
+    <section className="section ">
+      <div className="container ">
+        <div className="row">
+          <div className="col-md-7 ">
+            <form
+              //action="/api/contact"
+              method="POST"
+              className={`bg-white p-md-5 p-4 mb-5 ${abrilFatface.className}`}
+            >
+              <div className="row">
+                <div className="col-md-6 form-group1">
+                  <label htmlFor="name">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="form-control "
+                  ></input>
                 </div>
+                <div className="col-md-6 form-group1">
+                  <label htmlFor="phone">Phone</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    className="form-control "
+                  ></input>
+                </div>
+              </div>
 
-                <div className="row">
-                  <div className="col-md-12 form-group1">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="form-control "
-                    ></input>
-                  </div>
+              <div className="row">
+                <div className="col-md-12 form-group1">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="form-control "
+                  ></input>
                 </div>
-                <div className="row">
-                  <div className="col-md-12 form-group1">
-                    <label htmlFor="message">Write Message</label>
-                    <textarea
-                      name="message"
-                      id="message"
-                      className="form-control "
-                      cols="30"
-                      rows="8"
-                    ></textarea>
-                  </div>
+              </div>
+              <div className="row">
+                <div className="col-md-12 form-group1">
+                  <label htmlFor="message">Write Message</label>
+                  <textarea
+                    name="message"
+                    id="message"
+                    className="form-control "
+                    cols="30"
+                    rows="8"
+                  ></textarea>
                 </div>
-                <div className="row">
-                  <div
-                    className="col-md-6 form-group1"
-                    style={{ paddingTop: "20px" }}
-                  >
-                    <input
-                      type="submit"
-                      value="Send Message"
-                      className="btn btn-primary"
-                    ></input>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div className="col-md-5">
+              </div>
               <div className="row">
                 <div
-                  className="col-md-10 ml-auto contact-info"
-                  style={{ marginTop: "40px" }}
+                  className="col-md-6 form-group1"
+                  style={{ paddingTop: "20px" }}
                 >
-                  <p>
-                    <span className="d-block">Address:</span>{" "}
-                    <span>
-                      {" "}
-                      98 West 21th Street, Suite 721 New York NY 10016
-                    </span>
-                  </p>
-                  <p>
-                    <span className="d-block">Phone:</span>{" "}
-                    <span> (+1) 435 3533</span>
-                  </p>
-                  <p>
-                    <span className="d-block">Email:</span>{" "}
-                    <span> info@yourdomain.com</span>
-                  </p>
+                  <input
+                    type="submit"
+                    value="Send Message"
+                    className="btn btn-primary"
+                  ></input>
                 </div>
+              </div>
+            </form>
+          </div>
+          <div className="col-md-5">
+            <div className="row">
+              <div
+                className="col-md-10 ml-auto contact-info"
+                style={{ marginTop: "40px" }}
+              >
+                <p>
+                  <span className="d-block">Address:</span>{" "}
+                  <span> 98 West 21th Street, Suite 721 New York NY 10016</span>
+                </p>
+                <p>
+                  <span className="d-block">Phone:</span>{" "}
+                  <span> +1 (800) 555-TRVL</span>
+                </p>
+                <p>
+                  <span className="d-block">Email:</span>{" "}
+                  <span> info@worldtravel.com</span>
+                </p>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* <!--end of content info-->*/}
-
-      {/* putting the map in */}
-      <div class="container">
+export default async function HomePage() {
+  const agencies = await getAgency();
+  const agents1 = await getAgentsbyId1();
+  const agents2 = await getAgentsbyId2();
+  return (
+    <>
+      <HeadingPic />
+      <ContactForm />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white ">
+          <h2 className="text-2xl font-semibold mb-6">Branch List</h2>
+          <AgencyList agencies={agencies} />
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white ">
+          <h2 className="text-2xl font-semibold mb-6">
+            Our Agents from Branch 1
+          </h2>
+          <AgentsList agents={agents1} />
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white ">
+          <h2 className="text-2xl font-semibold mb-6">
+            Our Agents from Branch 2
+          </h2>
+          <AgentsList agents={agents2} />
+        </div>
+      </div>
+      <div className="container">
         <Iframe />
       </div>
     </>
   );
-
-  //<h1>vacation</h1>;
 }
