@@ -59,3 +59,31 @@ export async function createUser({ name, phone, email, message }) {
   console.log(result);
   return { id: result.insertid };
 }
+
+export async function getActivePackage() {
+  try {
+    const [packages] = await db.query(
+      "SELECT * FROM packages WHERE PkgEndDate >= CURRENT_DATE"
+    );
+
+    //AND PkgStartDate <= CURRENT_DATE
+    return packages;
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    throw error;
+  }
+}
+
+export async function getNonActivePackage() {
+  try {
+    const [packages] = await db.query(
+      "SELECT * FROM packages WHERE PkgStartDate <= CURRENT_DATE"
+    );
+
+    //AND PkgStartDate <= CURRENT_DATE
+    return packages;
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    throw error;
+  }
+}

@@ -26,3 +26,14 @@ export async function UserCommentAction(formData) {
   revalidatePath("/contact");
   redirect("/");
 }
+
+export async function UserBooking(pkg) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("selectedPackage", JSON.stringify(pkg));
+    window.location.href = "/booking"; // navigate to booking page
+  }
+
+  //refreshes or updates the page by fetching from the database
+  //revalidatePath("/contact");
+  redirect("/vacation-package/booking");
+}

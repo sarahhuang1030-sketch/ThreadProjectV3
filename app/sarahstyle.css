@@ -454,3 +454,19 @@ h3 {
 .form-group1 input {
   width: 165px;
 }
+
+/* vacation packages */
+.card-body h4 {
+  font-family: "Abril Fatface", times, serif;
+  color: #838383;
+}
+
+.col img {
+  width: 325px;
+  height: 330px;
+}
+
+.heading h4 {
+  font-family: "Abril Fatface", times, serif;
+  color: #838383;
+}
