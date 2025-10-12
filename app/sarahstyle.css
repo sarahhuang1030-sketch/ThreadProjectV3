@@ -281,6 +281,11 @@ h3 {
   justify-content: center;
 }
 
+.bgimgmain {
+  background-image: url("/hero_2.jpg.webp");
+  background-size: cover;
+}
+
 /* header page for Registration - customer.html */
 .bgimg2 {
   background-image: url("/hero_3.jpg.webp");
@@ -355,7 +360,7 @@ h3 {
 
 .dealimg img {
   height: 380px;
-  width: 25%;
+
   padding: 15px;
 }
 

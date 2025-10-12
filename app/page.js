@@ -7,6 +7,7 @@ import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
+import { HeadingPic } from "./components/Heading";
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -170,29 +171,7 @@ export default function RootLayout() {
   return (
     <>
       {/* page wide picture */}
-      <div className="container-home bgimg">
-        <div className="row justify-content-center align-items-center content-mid">
-          <div className="col-md-10 text-center">
-            <h1
-              className="heading mb-4 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              Travel Packages
-            </h1>
-            <p
-              className="sub-heading mb-5 aos-init aos-animate"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              Where is your dream vacation? Explore our
-              <Link href="/vacation" target="_blank">
-                Vacation Package
-              </Link>
-              and share!
-            </p>
-          </div>
-        </div>
-      </div>
+      <HeadingPic bgClass="bgimg" heading="Home" />
 
       {/* tab contents with the popup here */}
       <TabSection
@@ -314,94 +293,131 @@ export default function RootLayout() {
         >
           Deal Zone
         </h1>
-        <div className="dealimg">
-          <Image
-            src="/deal1.webp"
-            style={{ borderRadius: "10px 10px 10px 80px" }}
-            width={325}
-            height={330}
-            alt="..."
-          />
-          <Image
-            src="/deal2.webp"
-            style={{ borderRadius: "10px" }}
-            width={325}
-            height={330}
-            alt="..."
-          />
-          <Image
-            src="/deal3.webp"
-            style={{ borderRadius: "10px" }}
-            width={325}
-            height={330}
-            alt="..."
-          />
-          <Image
-            src="/deal4.webp"
-            style={{ borderRadius: "10px 80px 10px 10px" }}
-            width={325}
-            height={330}
-            alt="..."
-          />
+        <div className="dealimg row g-4 justify-content-center mt-3">
+          <div className="col-12 col-sm-6 col-md-3">
+            <Image
+              src="/deal1.webp"
+              style={{ borderRadius: "10px 10px 10px 80px" }}
+              width={325}
+              height={330}
+              alt="..."
+            />
+          </div>
+          <div className="col-12 col-sm-6 col-md-3">
+            <Image
+              src="/deal2.webp"
+              style={{ borderRadius: "10px" }}
+              width={325}
+              height={330}
+              alt="..."
+            />
+          </div>
+          <div className="col-12 col-sm-6 col-md-3">
+            <Image
+              src="/deal3.webp"
+              style={{ borderRadius: "10px" }}
+              width={325}
+              height={330}
+              alt="..."
+            />
+          </div>
+          <div className="col-12 col-sm-6 col-md-3">
+            <Image
+              src="/deal4.webp"
+              style={{ borderRadius: "10px 80px 10px 10px" }}
+              width={325}
+              height={330}
+              alt="..."
+            />
+          </div>
         </div>
-        <div className="dealinfo">
-          <div className="dealdetail">
-            <div className="tagline">SLS BAHA MAR</div>
-            <h4>4th Night Free and up to $250 resort credit</h4>
-            <p>Expires: December 21, 2025</p>
-            <Link
-              href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
-              target="_blank"
-            >
-              <button type="submit" className="dealbutton">
-                More Detail
-              </button>
-            </Link>
-          </div>
-          <div className="dealdetail">
-            <div className="tagline">
-              Margaritaville Beach Resort, Nassau, Bahamas
+        <div className="row g-4 mt-4">
+          <div className="col-12 col-md-6 col-lg-3">
+            <div className="p-3  h-100">
+              <div className="tagline">SLS BAHA MAR</div>
+              <h4 className={`${abrilFatface.className} text-secondary`}>
+                4th Night Free and up to $250 resort credit
+              </h4>
+              <p className="text-muted fst-italic">
+                Expires: December 21, 2025
+              </p>
+              <a
+                href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button type="button" className="btn btn-primary w-100">
+                  More Detail
+                </button>
+              </a>
             </div>
-            <h4>Save 25% </h4>
-            <p>Expires: December 21, 2025</p>
-            <Link
-              href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
-              target="_blank"
-            >
-              <button type="submit" className="dealbutton">
-                More Detail
-              </button>
-            </Link>
           </div>
-          <div className="dealdetail">
-            <div className="tagline">Comfort Suites Paradise Island</div>
-            <h4>
-              4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
-              Free! Includes access to Atlantis Paradise Island Plus up to $100
-              Resort Credit
-            </h4>
-            <p>Expires: December 21, 2025</p>
-            <Link
-              href="https://www.comfortsuitespi.com/specials"
-              target="_blank"
-            >
-              <button type="submit" className="dealbutton">
-                More Detail
-              </button>
-            </Link>
+
+          <div className="col-12 col-md-6 col-lg-3">
+            <div className="p-3 h-100">
+              <div className="tagline">
+                Margaritaville Beach Resort, Nassau, Bahamas
+              </div>
+              <h4 className={`${abrilFatface.className} text-secondary`}>
+                Save 25%
+              </h4>
+              <p className="text-muted fst-italic">
+                Expires: December 21, 2025
+              </p>
+              <a
+                href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button type="button" className="btn btn-primary w-100">
+                  More Detail
+                </button>
+              </a>
+            </div>
           </div>
-          <div className="dealdetail">
-            <div className="tagline">British Colonial Nassau</div>
-            <h4>Save 15% + $300 Resort Credit</h4>
-            <p>Expires: December 21, 2025</p>
-            <Link
-              href="https://www.britishcolonial.com/special-offers.htm"
-              target="_blank"
-            >
-              <button type="submit" className="dealbutton">
-                More Detail
-              </button>
-            </Link>
+
+          <div className="col-12 col-md-6 col-lg-3">
+            <div className="p-3 h-100">
+              <div className="tagline">Comfort Suites Paradise Island</div>
+              <h4 className={`${abrilFatface.className} text-secondary`}>
+                4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
+                Free! Includes access to Atlantis Paradise Island Plus up to
+                $100 Resort Credit
+              </h4>
+              <p className="text-muted fst-italic">
+                Expires: December 21, 2025
+              </p>
+              <a
+                href="https://www.comfortsuitespi.com/specials"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button type="button" className="btn btn-primary w-100">
+                  More Detail
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <div className="col-12 col-md-6 col-lg-3">
+            <div className="p-3 h-100">
+              <div className="tagline">British Colonial Nassau</div>
+              <h4 className={`${abrilFatface.className} text-secondary`}>
+                Save 15% + $300 Resort Credit
+              </h4>
+              <p className="text-muted fst-italic">
+                Expires: December 21, 2025
+              </p>
+              <a
+                href="https://www.britishcolonial.com/special-offers.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button type="button" className="btn btn-primary w-100">
+                  More Detail
+                </button>
+              </a>
+            </div>
           </div>
         </div>
       </div>

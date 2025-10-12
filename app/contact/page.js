@@ -8,6 +8,7 @@ import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
 import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
 import { UserCommentAction } from "../lib/action";
+import { HeadingPic } from "../components/Heading";
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -27,23 +28,6 @@ export function Iframe() {
       style={{ border: "2px solid #ccc", position: "relative", top: "5px" }}
       title="SAIT Parking P9 Map"
     />
-  );
-}
-
-export function HeadingPic() {
-  return (
-    <div className="container-home bgimg3">
-      <div className="row justify-content-center align-items-center content-mid">
-        <div className="col-md-10 text-center">
-          <h1
-            className={`heading mb-4 aos-init aos-animate ${abrilFatface.className}`}
-            data-aos="fade-up"
-          >
-            Contact Us
-          </h1>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -151,7 +135,7 @@ export default async function HomePage() {
   const agents2 = await getAgentsbyId2();
   return (
     <>
-      <HeadingPic />
+      <HeadingPic bgClass="bgimg3" heading="Contact Us" />
       <ContactForm />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white ">

@@ -7,30 +7,14 @@ import { getActivePackage, getNonActivePackage } from "../lib/agencies";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import PackageList from "../components/PackageList";
+import { HeadingPic } from "../components/Heading";
 //import { UserCommentAction } from "../lib/action";
 
-const abrilFatface = Abril_Fatface({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-abril-fatface", // Optional: for CSS variable usage
-});
-
-export function HeadingPic() {
-  return (
-    <div className="container-home bgimg1">
-      <div className="row justify-content-center align-items-center content-mid">
-        <div className="col-md-10 text-center">
-          <h1
-            className={`heading mb-4 aos-init aos-animate ${abrilFatface.className}`}
-            data-aos="fade-up"
-          >
-            Vacation Package
-          </h1>
-        </div>
-      </div>
-    </div>
-  );
-}
+// const abrilFatface = Abril_Fatface({
+//   weight: ["400"],
+//   subsets: ["latin"],
+//   variable: "--font-abril-fatface", // Optional: for CSS variable usage
+// });
 
 export default async function HomePage() {
   const packages = await getActivePackage();
@@ -38,7 +22,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeadingPic />
+      <HeadingPic bgClass="bgimg1" heading="Vacation Package" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white heading">

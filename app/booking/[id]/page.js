@@ -2,6 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Abril_Fatface } from "next/font/google";
+import { HeadingPic } from "@/app/components/Heading";
+const abrilFatface = Abril_Fatface({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-abril-fatface", // Optional: for CSS variable usage
+});
 
 export default function BookingPage() {
   const router = useRouter();
@@ -15,9 +22,12 @@ export default function BookingPage() {
   if (!packageData) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>Booking: {packageData.PkgName}</h2>
-      <p>{packageData.PkgDesc}</p>
-    </div>
+    <>
+      <HeadingPic bgClass="bgimg1" heading="Vacation Package" />
+      <div>
+        <h2>Booking: {packageData.PkgName}</h2>
+        <p>{packageData.PkgDesc}</p>
+      </div>
+    </>
   );
 }

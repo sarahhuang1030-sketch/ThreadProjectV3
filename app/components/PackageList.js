@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect } from "react";
-import { UserBooking } from "../lib/action";
+import { useRouter } from "next/navigation";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Ensure AOS styles are loaded
+import { HeadingPic } from "./Heading";
 
 let images = [
   { picture: "/pkg/1.webp" },
@@ -23,6 +25,7 @@ let Expiredimages = [
 ];
 
 export default function PackageList({ packages }) {
+  const router = useRouter();
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
@@ -62,7 +65,7 @@ export default function PackageList({ packages }) {
                               "selectedPackage",
                               JSON.stringify(pkg)
                             );
-                            window.location.href = `/booking/${pkg.PackageId}`;
+                            router.push(`/booking/${pkg.PackageId}`);
                           }}
                           className="btn btn-sm btn-outline-secondary px-4 py-2 hover:bg-grey-600"
                           type="button"
