@@ -26,7 +26,6 @@ export default function PackageList({ packages }) {
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {(packages || []).map((pkg, index) => {
@@ -54,41 +53,33 @@ export default function PackageList({ packages }) {
                   <p className="tagline">{pkg.PkgName}</p>
                   <h4>{pkg.PkgDesc}</h4>
 
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-500">
-                      <span className="font-medium">Start Date:</span>{" "}
-                      {new Date(pkg.PkgStartDate).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      <span className="font-medium">End Date:</span>{" "}
-                      {new Date(pkg.PkgEndDate).toLocaleDateString()}
-                    </p>
-                    <p className="text-lg font-bold text-green-600 mt-2">
-                      ¥{pkg.PkgBasePrice.toLocaleString()}
-                    </p>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="btn-group">
+                      {!isExpired && (
+                        <button
+                          onClick={() => {
+                            localStorage.setItem(
+                              "selectedPackage",
+                              JSON.stringify(pkg)
+                            );
+                            window.location.href = `/booking/${pkg.PackageId}`;
+                          }}
+                          className="btn btn-sm btn-outline-secondary px-4 py-2 hover:bg-grey-600"
+                          type="button"
+                        >
+                          Book
+                        </button>
+                      )}
+                    </div>
+
+                    <small className="text-body-secondary ml-3">
+                      Start: {pkg.PkgStartDate} |
+                    </small>
+                    <small className="text-body-secondary">
+                      End: {pkg.PkgEndDate}
+                    </small>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 flex justify-between items-center">
-                {!isExpired ? (
-                  <Link
-                    href={`/booking/${pkg.PackageId}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                  >
-                    Booking NOW
-                  </Link>
-                ) : (
-                  <span className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                    Expired
-                  </span>
-                )}
-
-                {isExpired && (
-                  <span className="text-red-500 text-sm font-medium">
-                    (Departure date has passed)
-                  </span>
-                )}
               </div>
             </div>
           </div>
