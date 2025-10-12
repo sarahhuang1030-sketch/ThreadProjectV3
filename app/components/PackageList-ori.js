@@ -1,13 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import AOS from "aos";
-import "aos/dist/aos.css"; // Ensure AOS styles are loaded
-import { HeadingPic } from "./Heading";
-import Link from "next/link";
+import { UserBooking } from "../lib/action";
+
 let images = [
   { picture: "/pkg/1.webp" },
   { picture: "/pkg/2.avif" },
@@ -25,11 +23,9 @@ let Expiredimages = [
 ];
 
 export default function PackageList({ packages }) {
-  const router = useRouter();
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {(packages || []).map((pkg, index) => {
@@ -66,7 +62,7 @@ export default function PackageList({ packages }) {
                               "selectedPackage",
                               JSON.stringify(pkg)
                             );
-                            router.push(`/booking/${pkg.PackageId}`);
+                            window.location.href = `/booking/${pkg.PackageId}`;
                           }}
                           className="btn btn-sm btn-outline-secondary px-4 py-2 hover:bg-grey-600"
                           type="button"
@@ -84,27 +80,6 @@ export default function PackageList({ packages }) {
                     </small>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 flex justify-between items-center">
-                {!isExpired ? (
-                  <Link
-                    href={`/booking/${pkg.PackageId}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                  >
-                    Booking NOW
-                  </Link>
-                ) : (
-                  <span className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                    Expired
-                  </span>
-                )}
-
-                {isExpired && (
-                  <span className="text-red-500 text-sm font-medium">
-                    (Departure date has passed)
-                  </span>
-                )}
               </div>
             </div>
           </div>
