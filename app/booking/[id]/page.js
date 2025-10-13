@@ -1,37 +1,26 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-// export default function BookingPage() {
-//   const router = useRouter();
-//   const [packageData, setPackageData] = useState(null);
-
-//   useEffect(() => {
-//     const stored = localStorage.getItem("selectedPackage");
-//     if (stored) setPackageData(JSON.parse(stored));
-//   }, []);
-
-//   if (!packageData) return <p>Loading...</p>;
-
-//   return (
-//     <div>
-//       <h2>Booking: {packageData.PkgName}</h2>
-//       <p>{packageData.PkgDesc}</p>
-//     </div>
-//   );
-// }
 
 export default function BookingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // 从查询参数中获取 packageId 和 price
+  const packageId = searchParams.get("packageId");
+  const price = searchParams.get("price");
+  const pkgName = searchParams.get("name");
+
+  // 模拟从 API 获取套餐详情（实际项目中替换为真实 API 调用）
   const [packageDetails, setPackageDetails] = useState({
-    PackageId: packageId,
-    PkgName: "LOADING...",
-    PkgBasePrice: 0,
+    PackageId: packageId || "",
+    PkgName: pkgName || "LOADING...",
+    PkgBasePrice: price ? parseInt(price) : 0,
   });
 
   const [formData, setFormData] = useState({
-    CustomerId: Math.floor(Math.random() * 10000), // Simulate and generate customer ID
+    CustomerId: Math.floor(Math.random() * 10000),
     CustFirstName: "",
     CustLastName: "",
     CustEmail: "",
@@ -45,13 +34,46 @@ export default function BookingPage() {
     TripEnd: "",
     Description: "",
     Destination: "",
-    BasePrice: packageDetails.PkgBasePrice,
-    PackageId: packageId,
+    BasePrice: price ? parseInt(price) : 0,
+    PackageId: packageId || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  // 模拟 API 调用获取套餐详情
+  useEffect(() => {
+    if (!packageId) return;
+
+    // 替换为实际 API 调用
+    const fetchPackageDetails = async () => {
+      try {
+        // 示例：模拟 API 延迟
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setPackageDetails({
+          PackageId: packageId,
+          PkgName: pkgName || "Summer Vacation Package", // 使用从参数传递的名称
+          PkgBasePrice: price ? parseInt(price) : 1999, // 使用从参数传递的价格
+        });
+      } catch (err) {
+        setError("Failed to load package details.");
+      }
+    };
+
+    fetchPackageDetails();
+  }, [packageId, price, pkgName]);
+
+  // 更新表单数据
+  useEffect(() => {
+    if (packageDetails.PkgBasePrice > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        PackageId: packageId || "",
+        BasePrice: packageDetails.PkgBasePrice,
+      }));
+    }
+  }, [packageDetails.PkgBasePrice, packageId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,33 +94,21 @@ export default function BookingPage() {
         !formData.CustLastName ||
         !formData.CustEmail
       ) {
-        throw new Error("Please fill in your name and email");
+        throw new Error("Please fill in your name and email.");
       }
 
-      // 在实际应用中，这里应该调用API提交数据
+      // 替换为实际 API 调用
       console.log("Submit booking data:", formData);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // 在实际应用中替换为真实的API调用
-      // const response = await fetch('/api/bookings', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
-
-      // if (!response.ok) throw new Error('预订失败');
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟提交延迟
 
       setSuccess(true);
 
-      // 预订成功后跳转到感谢页面
       setTimeout(() => {
         router.push(`/booking/thank-you?packageId=${packageId}`);
       }, 2000);
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred during the booking process"
+        err instanceof Error ? err.message : "An error occurred during booking."
       );
     } finally {
       setIsSubmitting(false);
@@ -134,7 +144,9 @@ export default function BookingPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Package ID</p>
-                <p className="font-medium">{packageId}</p>
+                <p className="font-medium">
+                  {packageDetails.PackageId || "N/A"}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Price</p>

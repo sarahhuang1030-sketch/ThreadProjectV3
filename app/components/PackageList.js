@@ -73,7 +73,14 @@ export default function PackageList({ packages }) {
               <div className="mt-4 flex justify-between items-center">
                 {!isExpired ? (
                   <Link
-                    href={`/booking/${pkg.PackageId}`}
+                    href={{
+                      pathname: `/booking/${pkg.PackageId}`,
+                      query: {
+                        packageId: pkg.PackageId,
+                        price: pkg.PkgBasePrice,
+                        name: pkg.PkgName,
+                      },
+                    }}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
                   >
                     Booking NOW
