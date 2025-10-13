@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import { useState } from "react";
+import { HeadingPic } from "../components/Heading";
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -11,25 +12,8 @@ const abrilFatface = Abril_Fatface({
   variable: "--font-abril-fatface", // Optional: for CSS variable usage
 });
 
-export function HeadingPic() {
-  return (
-    <div className="container-home bgimg2">
-      <div className="row justify-content-center align-items-center content-mid">
-        <div className="col-md-10 text-center">
-          <h1
-            className={`heading mb-4 aos-init aos-animate ${abrilFatface.className}`}
-            data-aos="fade-up"
-          >
-            Register with us
-          </h1>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function RootLayout() {
-  return <HeadingPic />;
+  return <HeadingPic bgClass="bgimg2" heading="Register" />;
 
   //<h1>vacation</h1>;
 }
