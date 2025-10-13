@@ -7,7 +7,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createUser } from "./agencies";
-import { createCustomer } from "./customer";  
+import { createCustomer } from "./customer";
 //UserCommentAction
 
 export async function UserCommentAction(formData) {
@@ -50,10 +50,10 @@ export async function UserCustomerAction(formData) {
   const CustCountry = formData.get("CustCountry");
   const CustHomePhone = formData.get("CustHomePhone");
   const CustBusPhone = formData.get("CustBusPhone");
-  const CustEmail = formData.get("CustEmail");    
+  const CustEmail = formData.get("CustEmail");
   await createCustomer({
     CustFirstname,
-    CustLastname, 
+    CustLastname,
     CustAddress,
     CustCity,
     CustProv,

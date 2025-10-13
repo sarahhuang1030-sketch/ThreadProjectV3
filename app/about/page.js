@@ -65,16 +65,21 @@ export default function RootLayout() {
                 <h2>LI SHIYUN</h2>
 
                 <p>
-                  Hello! I completed my undergraduate studies in Accounting and
-                  am currently enrolled in the Software Development program at
-                  SAIT. Right now, Im in a "full-time student and free
-                  exploration" mode. Although I don't have a formal job at the
-                  moment, I'm actively seeking internship opportunities through
-                  SAIT's Co-op program. I hope to combine business thinking from
-                  the accounting field with programming skills in the future to
-                  develop tools that enhance financial work efficiency. Outside
-                  of my studies, my hobbies include playing video games,
-                  singing, and reading novels.
+                  <p>
+                    Hello! I completed my undergraduate studies in Accounting
+                    and am currently enrolled in the Software Development
+                    program at SAIT. Right now, I&apos;m in a{" "}
+                    <strong>
+                      &quot;full-time student and free exploration&quot;
+                    </strong>{" "}
+                    mode. Although I don&apos;t have a formal job at the moment,
+                    I&apos;m actively seeking internship opportunities through
+                    SAIT&apos;s Co-op program. I hope to combine business
+                    thinking from the accounting field with programming skills
+                    in the future to develop tools that enhance financial work
+                    efficiency. Outside of my studies, my hobbies include
+                    playing video games, singing, and reading novels.
+                  </p>
                 </p>
               </div>
             </div>
@@ -88,7 +93,7 @@ export default function RootLayout() {
               style={{ position: "relative", left: "20%" }}
             >
               <div className="image">
-                <img src="/Nikitha.jpeg" width={260} height={200} alt="..." />
+                <Image src="/Nikitha.jpeg" width={260} height={200} alt="..." />
               </div>
               <div className="text">
                 <h2>Nikitha Kommidi</h2>
