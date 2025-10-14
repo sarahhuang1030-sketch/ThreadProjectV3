@@ -22,14 +22,14 @@ export default function GroupBookingPage() {
     const bookingData = { primary, travelers };
 
     // 调用API
-    const res = await fetch("/api/group-booking", {
+    const res = await fetch("/booking/group", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(bookingData),
     });
 
     if (res.ok) {
-      router.push("/booking/confirm");
+      router.push("/booking/confirmation");
     }
   };
 
