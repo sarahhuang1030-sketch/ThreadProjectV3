@@ -72,3 +72,25 @@ export async function submitBooking(formData) {
     throw error;
   }
 }
+
+//
+import { createBookings } from "./bookings";
+
+export async function submitBookings(bookingData) {
+  try {
+    // 验证必要字段
+    if (!bookingData.customerId || !bookingData.tripTypeId) {
+      throw new Error("Customer ID and Trip Type are required");
+    }
+
+    // 调用API创建预订
+    const bookingId = await createBookings(bookingData);
+
+    // 这里可以添加额外的逻辑，如发送确认邮件等
+
+    return bookingId;
+  } catch (error) {
+    console.error("Error submitting booking:", error);
+    throw error;
+  }
+}

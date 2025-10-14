@@ -66,10 +66,10 @@ export default async function HomePage() {
               View Past Booking Details
             </Link>
             <Link
-              href={{ pathname: `#` }}
+              href={{ pathname: `/bookings` }}
               className="bg-blue-600 text-white font-bold py-2 px-4 rounded no-underline text-center"
             >
-              View Shopping Cart
+              View Bookings
             </Link>
           </div>
         </div>
