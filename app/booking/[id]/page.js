@@ -72,6 +72,7 @@ export default function BookingPage() {
   //   return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
   // }
   function calculateDuration(startDate, endDate) {
+    console.log("start date", startDate);
     if (!startDate || !endDate) return "N/A";
 
     const startDateStr = startDate.split(" ")[0];
@@ -79,9 +80,11 @@ export default function BookingPage() {
 
     const start = new Date(startDateStr);
     const end = new Date(endDateStr);
+    console.log(start, end);
 
     // 计算天数差 +1（包含首尾两天）
     const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    console.log("diff daya", diffDays);
 
     return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
   }
