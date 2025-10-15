@@ -7,6 +7,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createUser } from "./agencies";
+import { createCustomer } from "./customer";
 //UserCommentAction
 
 export async function UserCommentAction(formData) {
@@ -93,4 +94,33 @@ export async function submitBookings(bookingData) {
     console.error("Error submitting booking:", error);
     throw error;
   }
+}
+
+export async function UserCustomerAction(formData) {
+  const CustID = formData.get("CustID");
+  const CustFirstname = formData.get("CustFirstname");
+  const CustLastname = formData.get("CustLastname");
+  const CustAddress = formData.get("CustAddress");
+  const CustCity = formData.get("CustCity");
+  const CustProv = formData.get("CustProv");
+  const CustPostal = formData.get("CustPostal");
+  const CustCountry = formData.get("CustCountry");
+  const CustHomePhone = formData.get("CustHomePhone");
+  const CustBusPhone = formData.get("CustBusPhone");
+  const CustEmail = formData.get("CustEmail");
+  await createCustomer({
+    CustFirstname,
+    CustLastname,
+    CustAddress,
+    CustCity,
+    CustProv,
+    CustPostal,
+    CustCountry,
+    CustHomePhone,
+    CustBusPhone,
+    CustEmail,
+  });
+  //refreshes or updates the page by fetching from the database
+  revalidatePath("/customer");
+  redirect("/");
 }

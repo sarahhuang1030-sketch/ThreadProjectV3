@@ -150,6 +150,7 @@ export default function BookingPage() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-md p-8">
@@ -251,6 +252,11 @@ export default function BookingPage() {
           </form>
         </div>
       </div>
+=======
+    <div>
+      <h2>Booking: {packageData.PkgName}</h2>
+      <p>{packageData.PkgDesc}</p>
+>>>>>>> 48401bbdc87aa60719d9e9ac28a553633dad3541
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 //import "./sarahstyle.css";
+//import "./nikitha.css";
 //import { useEffect } from "react";
 import { Abril_Fatface } from "next/font/google";
 import Link from "next/link";
