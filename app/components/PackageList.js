@@ -59,6 +59,7 @@ export default function PackageList({ packages }) {
                   <p className="card-text">{pkg.PkgDesc}</p>
                 </div>
 
+<<<<<<< HEAD
                 <div className="mt-3">
                   <div className="d-flex justify-content-between align-items-start">
                     <div>
@@ -97,6 +98,55 @@ export default function PackageList({ packages }) {
                   </div>
                 </div>
               </div>
+=======
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">
+                      <span className="font-medium">Start Date:</span>{" "}
+                      {new Date(pkg.PkgStartDate).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      <span className="font-medium">End Date:</span>{" "}
+                      {new Date(pkg.PkgEndDate).toLocaleDateString()}
+                    </p>
+                    <p className="text-lg font-bold text-green-600 mt-2">
+                      ¥{pkg.PkgBasePrice.toLocaleString()}
+                    </p>
+
+                    <p className="text-sm text-blue-600">
+                      Commission: ¥{pkg.PkgAgencyCommission.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-between items-center">
+                {!isExpired ? (
+                  <Link
+                    href={{
+                      pathname: `/booking/${pkg.PackageId}`,
+                      query: {
+                        packageId: pkg.PackageId,
+                        price: pkg.PkgBasePrice,
+                        name: pkg.PkgName,
+                      },
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
+                  >
+                    Booking NOW
+                  </Link>
+                ) : (
+                  <span className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
+                    Expired
+                  </span>
+                )}
+
+                {isExpired && (
+                  <span className="text-red-500 text-sm font-medium">
+                    (Departure date has passed)
+                  </span>
+                )}
+              </div>
+>>>>>>> d07ed34bb0ca627b495d1d800dd36238ba22a9e3
             </div>
           </div>
         );
