@@ -31,7 +31,7 @@ export default function PackageList({ packages }) {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4  align-items-start">
       {(packages || []).map((pkg, index) => {
         const isExpired = new Date(pkg.PkgStartDate) <= new Date();
         const imageSrc = isExpired
@@ -39,27 +39,30 @@ export default function PackageList({ packages }) {
           : images[index]?.picture;
 
         return (
-          <div
-            key={pkg.PackageId}
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            <div className="row row-cols-1 g-3">
-              <div className="col">
-                <Image
-                  src={imageSrc || "/placeholder.jpg"}
-                  width={325}
-                  height={330}
-                  alt={pkg.PkgName || "Package image"}
-                  unoptimized
-                />
+          <div key={pkg.PackageId} className="col">
+            <div
+              className="card h-100 shadow-sm"
+              style={{ width: "325px", height: "530px" }}
+            >
+              <Image
+                src={imageSrc || "/placeholder.jpg"}
+                className="card-img-top"
+                alt={pkg.PkgName || "Package image"}
+                style={{ height: "330px", objectFit: "cover" }}
+                width={325}
+                height={330}
+              />
 
-                <div className="card-body">
-                  <p className="tagline">{pkg.PkgName}</p>
-                  <h4>{pkg.PkgDesc}</h4>
+              <div className="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <h5 className="card-title">{pkg.PkgName}</h5>
+                  <p className="card-text">{pkg.PkgDesc}</p>
+                </div>
 
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="btn-group">
-                      {!isExpired && (
+                <div className="mt-3">
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      {!isExpired ? (
                         <button
                           onClick={() => {
                             localStorage.setItem(
@@ -68,43 +71,31 @@ export default function PackageList({ packages }) {
                             );
                             router.push(`/booking/${pkg.PackageId}`);
                           }}
-                          className="btn btn-sm btn-outline-secondary px-4 py-2 hover:bg-grey-600"
+                          className="btn btn-outline-primary btn-sm"
                           type="button"
                         >
                           Book
                         </button>
+                      ) : (
+                        <span className="badge bg-secondary">Expired</span>
                       )}
                     </div>
 
-                    <small className="text-body-secondary ml-3">
-                      Start: {pkg.PkgStartDate} |
-                    </small>
-                    <small className="text-body-secondary">
-                      End: {pkg.PkgEndDate}
-                    </small>
+                    <div className="text-end">
+                      <small className="text-muted d-block">
+                        Start: {pkg.PkgStartDate}
+                      </small>
+                      <small className="text-muted d-block">
+                        End: {pkg.PkgEndDate}
+                      </small>
+                      {isExpired && (
+                        <small className="text-danger d-block mt-1">
+                          (Departure date has passed)
+                        </small>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 flex justify-between items-center">
-                {!isExpired ? (
-                  <Link
-                    href={`/booking/${pkg.PackageId}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                  >
-                    Booking NOW
-                  </Link>
-                ) : (
-                  <span className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                    Expired
-                  </span>
-                )}
-
-                {isExpired && (
-                  <span className="text-red-500 text-sm font-medium">
-                    (Departure date has passed)
-                  </span>
-                )}
               </div>
             </div>
           </div>

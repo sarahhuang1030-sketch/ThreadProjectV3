@@ -294,7 +294,7 @@ export default function RootLayout() {
         >
           Deal Zone
         </h1>
-        <div className="dealimg row g-4 justify-content-center mt-3">
+        <div className=" row g-4 justify-content-center mt-3">
           <div className="col-12 col-sm-6 col-md-3">
             <Image
               src="/deal1.webp"
@@ -332,93 +332,77 @@ export default function RootLayout() {
             />
           </div>
         </div>
-        <div className="row g-4 mt-4">
-          <div className="col-12 col-md-6 col-lg-3">
-            <div className="p-3  h-100">
-              <div className="tagline">SLS BAHA MAR</div>
-              <h4 className={`${abrilFatface.className} text-secondary`}>
-                4th Night Free and up to $250 resort credit
-              </h4>
-              <p className="text-muted fst-italic">
-                Expires: December 21, 2025
-              </p>
-              <a
-                href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button type="button" className="btn btn-primary w-100">
-                  More Detail
-                </button>
-              </a>
-            </div>
+        <div className="row1 g-4 justify-between-center mt-3">
+          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
+            <div className="tagline">SLS BAHA MAR</div>
+            <h4 className={`${abrilFatface.className} text-secondary`}>
+              4th Night Free and up to $250 resort credit
+            </h4>
+            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <a
+              href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button type="button" className="btn btn-primary w-100">
+                More Detail
+              </button>
+            </a>
           </div>
 
-          <div className="col-12 col-md-6 col-lg-3">
-            <div className="p-3 h-100">
-              <div className="tagline">
-                Margaritaville Beach Resort, Nassau, Bahamas
-              </div>
-              <h4 className={`${abrilFatface.className} text-secondary`}>
-                Save 25%
-              </h4>
-              <p className="text-muted fst-italic">
-                Expires: December 21, 2025
-              </p>
-              <a
-                href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button type="button" className="btn btn-primary w-100">
-                  More Detail
-                </button>
-              </a>
+          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
+            <div className="tagline">
+              Margaritaville Beach Resort, Nassau, Bahamas
             </div>
+            <h4 className={`${abrilFatface.className} text-secondary`}>
+              Save 25%
+            </h4>
+            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <a
+              href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button type="button" className="btn btn-primary w-100">
+                More Detail
+              </button>
+            </a>
           </div>
 
-          <div className="col-12 col-md-6 col-lg-3">
-            <div className="p-3 h-100">
-              <div className="tagline">Comfort Suites Paradise Island</div>
-              <h4 className={`${abrilFatface.className} text-secondary`}>
-                4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
-                Free! Includes access to Atlantis Paradise Island Plus up to
-                $100 Resort Credit
-              </h4>
-              <p className="text-muted fst-italic">
-                Expires: December 21, 2025
-              </p>
-              <a
-                href="https://www.comfortsuitespi.com/specials"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button type="button" className="btn btn-primary w-100">
-                  More Detail
-                </button>
-              </a>
-            </div>
+          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
+            <div className="tagline">Comfort Suites Paradise Island</div>
+            <h4 className={`${abrilFatface.className} text-secondary`}>
+              4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
+              Free! Includes access to Atlantis Paradise Island Plus up to $100
+              Resort Credit
+            </h4>
+            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <a
+              href="https://www.comfortsuitespi.com/specials"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button type="button" className="btn btn-primary w-100">
+                More Detail
+              </button>
+            </a>
           </div>
 
-          <div className="col-12 col-md-6 col-lg-3">
-            <div className="p-3 h-100">
-              <div className="tagline">British Colonial Nassau</div>
-              <h4 className={`${abrilFatface.className} text-secondary`}>
-                Save 15% + $300 Resort Credit
-              </h4>
-              <p className="text-muted fst-italic">
-                Expires: December 21, 2025
-              </p>
-              <a
-                href="https://www.britishcolonial.com/special-offers.htm"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button type="button" className="btn btn-primary w-100">
-                  More Detail
-                </button>
-              </a>
-            </div>
+          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
+            <div className="tagline">British Colonial Nassau</div>
+            <h4 className={`${abrilFatface.className} text-secondary`}>
+              Save 15% + $300 Resort Credit
+            </h4>
+            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <a
+              href="https://www.britishcolonial.com/special-offers.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button type="button" className="btn btn-primary w-100">
+                More Detail
+              </button>
+            </a>
           </div>
         </div>
       </div>
