@@ -143,3 +143,37 @@ export async function updateCustomer(
 
   return { id: result.insertid };
 }
+
+export async function createCustomer2({
+  CustFirstName,
+  CustLastName,
+
+  CustHomePhone,
+
+  CustEmail,
+}) {
+  //check if name and email are undefined
+  //these are required fields
+  if (
+    !CustFirstName?.trim() ||
+    !CustLastName?.trim() ||
+    !CustHomePhone?.trim() ||
+    !CustEmail?.trim()
+  )
+    throw new Error("Please enter the required field");
+  //check if the email is unique
+  const [existing] = await db.query(
+    "SELECT CustomerId FROM customers where CustEmail = ?",
+    [CustEmail]
+  );
+  if (existing.length > 0)
+    throw new Error("Customer with this email already exist");
+  //otherwise store new user
+  const result = await db.query(
+    "Insert into customers (CustFirstName, CustLastName,  CustHomePhone, CustEmail) values(?,?,?,?)",
+    [CustFirstName, CustLastName, CustHomePhone, CustEmail]
+  );
+  //return id of the inserted object
+  console.log(result);
+  return { id: result.insertid };
+}

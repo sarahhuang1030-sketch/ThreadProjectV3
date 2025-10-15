@@ -87,3 +87,67 @@ export async function getNonActivePackage() {
     throw error;
   }
 }
+
+export async function getCustomers() {
+  try {
+    const [customers] = await db.query("SELECT * FROM customers");
+    //#8 array error
+    return customers;
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    throw error;
+  }
+}
+
+export async function createCustomers({
+  CustFirstName,
+  CustLastName,
+  CustAddress,
+  CustHomePhone,
+  CustBusPhone,
+  CustCity,
+  CustProv,
+  CustCountry,
+  CustEmail,
+  CustPostal,
+}) {
+  //check if name and email are undefined
+  //these are required fields
+  if (
+    !CustFirstName?.trim() ||
+    !CustLastName?.trim() ||
+    !CustEmail?.trim() ||
+    !CustHomePhone?.trim()
+  )
+    throw new Error("Please enter the required field");
+
+  //check if the email is unique
+  const [row] = await db.query(
+    "SELECT CustomerId FROM customers where CustEmail = ?",
+    [CustEmail]
+  );
+
+  if (row.length > 0) throw new Error("Customer with this email already exist");
+  // alert("Customer with this email already exist");
+
+  //otherwise store new user
+  const result = await db.query(
+    "INSERT INTO customers (CustFirstName, CustLastName, CustAddress, CustHomePhone, CustBusPhone, CustCity, CustProv, CustCountry, CustEmail, CustPostal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      CustFirstName,
+      CustLastName,
+      CustAddress,
+      CustHomePhone,
+      CustBusPhone,
+      CustCity,
+      CustProv,
+      CustCountry,
+      CustEmail,
+      CustPostal,
+    ]
+  );
+
+  //return id of the inserted object
+  console.log(result);
+  return { id: result.insertId };
+}

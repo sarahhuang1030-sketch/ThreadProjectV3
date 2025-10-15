@@ -403,6 +403,14 @@ h3 {
   border: 2px solid #838383;
 }
 
+.row1 {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  /* padding: 10px; */
+  display: flex;
+}
+
 /*  */
 .contact-info {
   font-family: "Abril Fatface", times, serif;
