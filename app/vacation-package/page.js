@@ -6,16 +6,11 @@ import { getActivePackage, getNonActivePackage } from "../lib/agencies";
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
-<<<<<<< HEAD
-import PackageList from "../components/PackageList";
-import BookingDetailList from "../components/bookingList";
-import Link from "next/link";
-=======
 
 import PackageList from "../components/PackageList";
 import { HeadingPic } from "../components/Heading";
+import Link from "next/link";
 
->>>>>>> 48401bbdc87aa60719d9e9ac28a553633dad3541
 //import { UserCommentAction } from "../lib/action";
 
 // const abrilFatface = Abril_Fatface({
