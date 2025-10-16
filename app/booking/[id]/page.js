@@ -82,15 +82,11 @@ export default function BookingPage() {
     console.log("Parsed Start:", start);
     console.log("Parsed End:", end);
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      console.error("Invalid date format:", { startDate, endDate });
-      return "N/A";
-    }
+    // 计算天数差 +1（包含首尾两天）
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    console.log("diff daya", diffDays);
 
-    const durationInMs = end - start;
-    const durationInDays = durationInMs / (1000 * 60 * 60 * 24);
-
-    return Math.ceil(durationInDays);
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
   }
 
   useEffect(() => {
