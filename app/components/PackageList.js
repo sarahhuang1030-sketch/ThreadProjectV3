@@ -77,11 +77,11 @@ export default function PackageList({ packages }) {
                       {new Date(pkg.PkgEndDate).toLocaleDateString()}
                     </p>
                     <p className="text-lg font-bold text-green-600 mt-2">
-                      ¥{pkg.PkgBasePrice.toLocaleString()}
+                      ${pkg.PkgBasePrice.toLocaleString()}
                     </p>
 
                     <p className="text-sm text-blue-600">
-                      Commission: ¥{pkg.PkgAgencyCommission.toLocaleString()}
+                      Commission: ${pkg.PkgAgencyCommission.toLocaleString()}
                     </p>
                   </div>
                 </div>

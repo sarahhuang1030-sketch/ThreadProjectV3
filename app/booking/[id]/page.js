@@ -15,8 +15,8 @@ export default function BookingPage() {
     PackageId: packageId || "",
     PkgName: pkgName || "LOADING...",
     PkgBasePrice: price ? parseInt(price) : 0,
-    PkgStartDate: "", // 添加缺失字段
-    PkgEndDate: "", // 添加缺失字段
+    PkgStartDate: "",
+    PkgEndDate: "",
   });
 
   const [formData, setFormData] = useState({
@@ -24,7 +24,8 @@ export default function BookingPage() {
     CustFirstName: "",
     CustLastName: "",
     CustEmail: "",
-    CustPhone: "",
+    CustHomePhone: "",
+    CustBusPhone: "",
     CustAddress: "",
     CustCity: "",
     CustProv: "",
@@ -52,8 +53,8 @@ export default function BookingPage() {
           PackageId: packageId,
           PkgName: pkgName || "Summer Vacation Package",
           PkgBasePrice: price ? parseInt(price) : 1999,
-          PkgStartDate: "2024-01-01", // 模拟数据
-          PkgEndDate: "2024-01-07", // 模拟数据
+          PkgStartDate: "2024-01-01",
+          PkgEndDate: "2024-01-07",
         });
       } catch (err) {
         setError("Failed to load package details.");
@@ -63,33 +64,30 @@ export default function BookingPage() {
     fetchPackageDetails();
   }, [packageId, price, pkgName]);
 
-  // 计算行程天数
-  // function calculateDuration(startDate, endDate) {
-  //   if (!startDate || !endDate) return "N/A";
-  //   const start = new Date(startDate.split(" ")[0]);
-  //   const end = new Date(endDate.split(" ")[0]);
-  //   const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-  //   return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
-  // }
   function calculateDuration(startDate, endDate) {
-    console.log("start date", startDate);
-    if (!startDate || !endDate) return "N/A";
+    // console.log("start date", startDate);
+    //if (!startDate || !endDate) return "N/A";
 
     const startDateStr = startDate.split(" ")[0];
     const endDateStr = endDate.split(" ")[0];
 
+    // const start = new Date(startDateStr);
+    // const end = new Date(endDateStr);
     const start = new Date(startDateStr);
     const end = new Date(endDateStr);
-    console.log(start, end);
+    //  console.log(start, end);
 
-    // 计算天数差 +1（包含首尾两天）
-    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    console.log("diff daya", diffDays);
+    //  const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    // console.log("diff daya", diffDays);
+    const durationInMs = end - start;
+    const durationInDays = durationInMs / (1000 * 60 * 60 * 24);
+    console.log("Start:", packageDetails.PkgStartDate);
+    console.log("End:", packageDetails.PkgEndDate);
+    return Math.ceil(durationInDays);
 
-    return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
+    //  return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
   }
 
-  // 更新表单数据
   useEffect(() => {
     if (packageDetails.PkgBasePrice > 0) {
       setFormData((prev) => ({
@@ -121,22 +119,24 @@ export default function BookingPage() {
       }
 
       console.log("Submit booking data:", formData);
+      // Uncomment when API is ready
+      // const response = await fetch("/api/bookings", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(formData),
+      // });
+
+      // const result = await response.json();
+      // if (!response.ok || !result.success) {
+      //   throw new Error(result.error || "Booking failed");
+      // }
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setSuccess(true);
 
       setTimeout(() => {
         router.push(`/booking/thank-you?packageId=${packageId}`);
       }, 2000);
-      //   const response = await fetch("/api/bookings", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify(formData),
-      //   });
-
-      //   const result = await response.json();
-      //   if (!response.ok || !result.success) {
-      //     throw new Error(result.error || "Booking failed");
-      //   }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An error occurred during booking."
@@ -145,7 +145,7 @@ export default function BookingPage() {
       setIsSubmitting(false);
     }
   };
-  if (!packageData || !formData) return <p>Loading...</p>;
+
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -168,8 +168,6 @@ export default function BookingPage() {
             Booking {packageDetails.PkgName}
           </h1>
 
-          {/* 套餐信息 */}
-
           <div className="mb-8 p-4 bg-blue-50 rounded-lg">
             <h2 className="text-xl font-semibold text-blue-800 mb-2">
               Package information
@@ -187,13 +185,12 @@ export default function BookingPage() {
               <div>
                 <p className="text-sm text-gray-600">Price</p>
                 <p className="font-medium text-green-600">
-                  ¥{packageDetails.PkgBasePrice.toLocaleString()}
+                  ${packageDetails.PkgBasePrice.toLocaleString()}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* 表单 */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -232,7 +229,143 @@ export default function BookingPage() {
                 />
               </div>
 
-              {/* 其他表单字段... */}
+              <div>
+                <label
+                  htmlFor="CustEmail"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="CustEmail"
+                  name="CustEmail"
+                  value={formData.CustEmail}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustHomePhone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Home Phone <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="CustHomePhone"
+                  name="CustHomePhone"
+                  value={formData.CustHomePhone}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustBusPhone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Business Phone
+                </label>
+                <input
+                  type="text"
+                  id="CustBusPhone"
+                  name="CustBusPhone"
+                  value={formData.CustBusPhone}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustAddress"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Address
+                </label>
+                <input
+                  type="text"
+                  id="CustAddress"
+                  name="CustAddress"
+                  value={formData.CustAddress}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustCity"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="CustCity"
+                  name="CustCity"
+                  value={formData.CustCity}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustProv"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Province
+                </label>
+                <input
+                  type="text"
+                  id="CustProv"
+                  name="CustProv"
+                  value={formData.CustProv}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustPostal"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Postal Code
+                </label>
+                <input
+                  type="text"
+                  id="CustPostal"
+                  name="CustPostal"
+                  value={formData.CustPostal}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="CustCountry"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Country
+                </label>
+                <input
+                  type="text"
+                  id="CustCountry"
+                  name="CustCountry"
+                  value={formData.CustCountry}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
             {error && (

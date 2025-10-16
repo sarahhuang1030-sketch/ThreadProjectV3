@@ -1,9 +1,8 @@
 "use client";
 import { UserRegisterAction } from "../lib/action";
 import { useState } from "react";
-//import { getCustomers } from "../lib/agencies";
-//const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_KEY;
 import { Abril_Fatface } from "next/font/google";
+import { useRouter } from "next/navigation";
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
   subsets: ["latin"],
@@ -22,9 +21,24 @@ export default function RegisterPage({ customers }) {
   const [CustBusPhone, setBusPhone] = useState("");
   const [CustEmail, setEmail] = useState("");
   const [errors, setErrors] = useState({});
-  //   const [data, setData] = useState(null);
-  //   const [loading, setLoading] = useState(false);
-  //   const [weatherError, setWeatherError] = useState(null);
+  const [message, setMessage] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const result = await UserRegisterAction(formData);
+
+    if (result.success) {
+      setMessage("Registration successful! Redirecting...");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500); // ✅ delay before redirect
+    } else {
+      setMessage("Registration failed. Please try again.");
+    }
+  };
 
   const patterns = {
     //allows letters (uppercase and lowercase), accents, and hyphens, and requires at least two characters.
@@ -33,6 +47,7 @@ export default function RegisterPage({ customers }) {
     CustHomePhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
     CustBusPhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
     CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    CustAddress: /^[0-9]+\s+[A-Za-z\s]+$/,
     //\d{4}          # Exactly 4 digits
     //[\s\-]?        # Optional space or hyphen
     //  year: /^y[1-4]$/,
@@ -115,7 +130,8 @@ export default function RegisterPage({ customers }) {
         </h1> */}
 
         <form
-          action={UserRegisterAction}
+          // action={UserRegisterAction}
+          onSubmit={handleSubmit}
           className="bg-white p-6 rounded-lg shadow mb-8"
         >
           <h2
@@ -318,6 +334,11 @@ export default function RegisterPage({ customers }) {
             </div>
           </div>
           <div className="flex justify-end mt-6">
+            {message && (
+              <div className="mt-4 p-3 bg-green-100 text-green-800 rounded text-center">
+                {message}
+              </div>
+            )}
             <button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import "./sarahstyle.css";
-import "./nikitha.css";
-import Link from "next/link";
+// import "./sarahstyle.css";
+// import "./nikitha.css";
+//import Link from "next/link";
 import Image from "next/image";
 //import Script from "./sarah.js";
 import "bootstrap/dist/css/bootstrap.min.css";

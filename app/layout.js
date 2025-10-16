@@ -7,6 +7,8 @@ import "./globals.css";
 import { Abril_Fatface } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
+import "../app/styles/sarahstyle.css";
+import { useState, useEffect } from "react";
 
 // export const metadata = {
 //   title: "Next.js",
@@ -20,6 +22,15 @@ const abrilFatface = Abril_Fatface({
 });
 
 export function Heading() {
+  const [firstName, setFirstName] = useState("");
+  useEffect(() => {
+    // Always read from localStorage on mount
+    const storedName = localStorage.getItem("CustFirstName");
+    if (storedName) {
+      setFirstName(storedName);
+    }
+  }, []);
+
   return (
     <header className={`bg-body-tertiary py-4  ${abrilFatface.className}`}>
       <div className="container ">
@@ -60,15 +71,39 @@ export function Heading() {
                   Contact
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/customer"
                   className="text-secondary text-decoration-none"
                 >
                   Register
                 </Link>
-              </li>
+              </li> */}
             </ul>
+          </div>
+          {/* Greeting */}
+          <div className="col-md-4 pt-3 text-end">
+            {firstName ? (
+              <>
+                <span className="text-secondary small me-3">
+                  Welcome, {firstName}!
+                </span>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => {
+                    localStorage.removeItem("CustFirstName");
+                    // window.location.reload();  refresh to update UI
+                    setFirstName(""); // instantly update UI
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className="btn btn-sm btn-outline-primary">
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Social or contact */}

@@ -29,28 +29,6 @@ export async function UserCommentAction(formData) {
   redirect("/");
 }
 
-// // booking list
-// export async function UserBooking(pkg) {
-//   if (typeof window !== "undefined") {
-//     // 存储选中的套餐信息到本地存储
-//     const packageData = {
-//       id: pkg.id,
-//       name: pkg.name,
-//       description: pkg.description,
-//       price: pkg.price,
-//       duration: pkg.duration,
-//       imageUrl: pkg.imageUrl,
-//     };
-//     localStorage.setItem("selectedPackage", JSON.stringify(packageData));
-
-//     // navigate to booking page
-//     window.location.href = "/booking";
-//   }
-//   //refreshes or updates the page by fetching from the database
-//   //revalidatePath("/contact");
-//   redirect("/vacation-package/booking");
-// }
-
 import { createBooking } from "./bookingdetails";
 
 // Submit booking action
@@ -153,7 +131,8 @@ export async function UserRegisterAction(formData) {
 
   //refreshes or updates the page by fetching from the database
   revalidatePath("/registerpage");
-  redirect("/");
+  // redirect("/login");
+  return { success: true };
 }
 
 export async function UserBookingAction(formData) {
