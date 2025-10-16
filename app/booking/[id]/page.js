@@ -65,16 +65,19 @@ export default function BookingPage() {
   }, [packageId, price, pkgName]);
 
   function calculateDuration(startDate, endDate) {
-    console.log("start date", startDate);
-    if (!startDate || !endDate) return "N/A";
+    // console.log("start date", startDate);
+    //if (!startDate || !endDate) return "N/A";
 
     const startDateStr = startDate.split(" ")[0];
     const endDateStr = endDate.split(" ")[0];
 
+    // const start = new Date(startDateStr);
+    // const end = new Date(endDateStr);
     const start = new Date(startDateStr);
     const end = new Date(endDateStr);
-    console.log(start, end);
+    //  console.log(start, end);
 
+    // 计算天数差 +1（包含首尾两天）
     const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
     console.log("diff daya", diffDays);
 
@@ -178,7 +181,7 @@ export default function BookingPage() {
               <div>
                 <p className="text-sm text-gray-600">Price</p>
                 <p className="font-medium text-green-600">
-                  ¥{packageDetails.PkgBasePrice.toLocaleString()}
+                  ${packageDetails.PkgBasePrice.toLocaleString()}
                 </p>
               </div>
             </div>

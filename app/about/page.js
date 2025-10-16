@@ -2,7 +2,7 @@
 //import Link from "next/link";
 import { Abril_Fatface } from "next/font/google";
 import { useState } from "react";
-import "../sarahstyle.css";
+//import "../sarahstyle.css";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
