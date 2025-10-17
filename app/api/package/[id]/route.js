@@ -1,29 +1,82 @@
+import db from "@/app/lib/database"; // your MySQL connection
 import { NextResponse } from "next/server";
-import db from "@/app/lib/database";
 
-export async function GET(request, context) {
-  const params = await context.params; // ✅ Await the params object
-
-  const { id } = params;
+export async function POST(req) {
+  const data = await req.json();
 
   try {
-    const result = await db.query(
-      "SELECT PackageId, PkgStartDate, PkgEndDate FROM packages WHERE PackageId = ?",
-      [id]
+    const {
+      primaryTraveler,
+      additionalTravelers,
+      packageId,
+      totalPrice,
+      travelDates,
+    } = data;
+
+    // 1. Insert primary traveler
+    const [customerResult] = await db.query(
+      `INSERT INTO customers 
+        (CustFirstName, CustLastName, CustEmail, CustHomePhone, CustAddress, CustCity, CustProv, CustPostal, CustCountry) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        primaryTraveler.CustFirstName,
+        primaryTraveler.CustLastName,
+        primaryTraveler.CustEmail,
+        primaryTraveler.CustHomePhone,
+        primaryTraveler.CustAddress,
+        primaryTraveler.CustCity,
+        primaryTraveler.CustProv,
+        primaryTraveler.CustPostal,
+        primaryTraveler.CustCountry,
+      ]
     );
 
-    const packageData = result.recordset?.[0] || result?.[0]; // handles both SQL Server and MySQL
+    const customerId = customerResult.insertId;
 
-    if (!packageData) {
-      return NextResponse.json({ error: "Package not found" }, { status: 404 });
+    // 2. Insert booking
+    await db.query(
+      `INSERT INTO bookings 
+        (BookingDate, BookingNo, CustomerId, TripStart, TripEnd, Destination, BasePrice, PackageId, TotalPrice) 
+       VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        generateBookingNo(),
+        customerId,
+        travelDates.start,
+        travelDates.end,
+        primaryTraveler.Destination || "Unknown",
+        primaryTraveler.BasePrice,
+        packageId,
+        totalPrice,
+      ]
+    );
+
+    // 3. Optional: Insert additional travelers
+    for (const traveler of additionalTravelers) {
+      await db.query(
+        `INSERT INTO additional_travelers 
+          (CustFirstName, CustLastName, CustEmail, CustHomePhone, BookingId) 
+         VALUES (?, ?, ?, ?, LAST_INSERT_ID())`,
+        [
+          traveler.CustFirstName,
+          traveler.CustLastName,
+          traveler.CustEmail,
+          traveler.CustHomePhone,
+        ]
+      );
     }
 
-    return NextResponse.json(packageData);
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("DB error:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Booking error:", err);
+    return NextResponse.json({ success: false, error: err.message });
   }
+}
+
+function generateBookingNo(length = 8) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }

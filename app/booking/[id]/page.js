@@ -4,16 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { HeadingPic } from "../../components/Heading";
-// import Link from "next/link";
-import { Abril_Fatface } from "next/font/google";
-
-const abrilFatface = Abril_Fatface({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-abril-fatface", // Optional: for CSS variable usage
-});
-
 export default function BookingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -23,517 +13,620 @@ export default function BookingPage() {
   const price = searchParams.get("price");
   const pkgName = searchParams.get("name");
 
+  // 验证必要参数是否存在
+  if (!packageId || !price) {
+    return (
+      <div className="mx-auto max-w-4xl p-6 text-center text-red-600">
+        <h1 className="mb-4 text-2xl font-bold">Invalid Booking Request</h1>
+        <p className="mb-4">
+          Missing required package information. Please return to the packages
+          page and try again.
+        </p>
+        <Link
+          href="/vacation-package"
+          className="rounded bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700"
+        >
+          Return to Packages
+        </Link>
+      </div>
+    );
+  }
+
   // Package details state
   const [packageDetails, setPackageDetails] = useState({
-    PackageId: packageId || "",
-    PkgName: pkgName || "LOADING...",
-    PkgBasePrice: price ? parseInt(price) : 0,
-    PkgStartDate: "",
-    PkgEndDate: "",
+    PackageId: packageId,
+    PkgName: pkgName || "Loading...",
+    PkgBasePrice: parseInt(price),
+    PkgStartDate: null,
+    PkgEndDate: null,
   });
 
-  // Form data state (including customer fields)
-  const [formData, setFormData] = useState({
-    // Customer fields
-    CustomerId: Math.floor(Math.random() * 10000),
+  // 主旅行者状态
+  const [primaryTraveler, setPrimaryTraveler] = useState({
     CustFirstName: "",
     CustLastName: "",
     CustEmail: "",
-    // CustHomePhone: "",
-    // CustBusPhone: "",
+    CustHomePhone: "",
     CustAddress: "",
     CustCity: "",
     CustProv: "",
     CustPostal: "",
     CustCountry: "",
-
-    // Booking fields
-    TripStart: "",
-    TripEnd: "",
-    Description: "",
-    Destination: "",
-    BasePrice: price ? parseInt(price) : 0,
-    PackageId: packageId || "",
   });
 
-  // Travelers state (customer is automatically the first traveler)
-  const [customers, setCustomers] = useState([
-    {
-      firstname: formData.CustFirstName,
-      endname: formData.CustEndName,
-      address: formData.CustAddress,
-      city: formData.CustCity,
-      province: formData.CustProv,
-      country: formData.CustCountry,
-      postal: formData.CustPostal,
-      email: formData.CustEmail,
-    },
-  ]);
+  // 附加旅行者状态
+  const [additionalTravelers, setAdditionalTravelers] = useState([]);
 
-  // Function to add traveler
-  const addCustomer = () => {
-    setCustomers([
-      ...customers,
-      {
-        firstname: "",
-        endname: "",
-        address: "",
-        city: "",
-        province: "",
-        country: "",
-        postal: "",
-        email: "",
-      },
-    ]);
-  };
-
-  // Function to remove traveler
-  const removeCustomer = (index) => {
-    if (index === 0) return; // Can't remove the primary traveler (customer)
-    setCustomers(customers.filter((_, i) => i !== index));
-  };
-
-  // Function to handle traveler input changes
-  const handleCustomerChange = (index, field, value) => {
-    const updateCustomers = [...customers];
-    updateCustomers[index] = {
-      ...updateCustomers[index],
-      [field]: value,
-    };
-    setCustomers(updateCustomers);
-  };
+  // 预订信息状态
+  const [bookingInfo, setBookingInfo] = useState({
+    TripStart: "",
+    TripEnd: "",
+    PackageId: packageId,
+  });
 
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Fetch package details
-  useEffect(() => {
-    if (!packageId) return;
+  // 添加旅行者
+  const addTraveler = () => {
+    setAdditionalTravelers([
+      ...additionalTravelers,
+      {
+        CustFirstName: "",
+        CustLastName: "",
+        CustEmail: "",
+        CustHomePhone: "",
+      },
+    ]);
+  };
 
+  // 移除旅行者
+  const removeTraveler = (index) => {
+    setAdditionalTravelers(additionalTravelers.filter((_, i) => i !== index));
+  };
+
+  // 处理主旅行者信息变化
+  const handlePrimaryTravelerChange = (e) => {
+    const { name, value } = e.target;
+    setPrimaryTraveler((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 处理附加旅行者信息变化
+  const handleAdditionalTravelerChange = (index, field, value) => {
+    const updatedTravelers = [...additionalTravelers];
+    updatedTravelers[index] = { ...updatedTravelers[index], [field]: value };
+    setAdditionalTravelers(updatedTravelers);
+  };
+
+  // 处理预订信息变化
+  const handleBookingInfoChange = (e) => {
+    const { name, value } = e.target;
+    setBookingInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 获取套餐详情
+  useEffect(() => {
     const fetchPackageDetails = async () => {
       try {
-        const res = await fetch(`/api/package/${packageId}`);
-        if (!res.ok) throw new Error("Failed to fetch");
-
-        const data = await res.json();
-        console.log("Fetched package data:", data); // Debug log
+        // 模拟API响应
+        const mockData = {
+          PackageId: packageId,
+          PkgName: pkgName || "Summer Vacation Package",
+          PkgBasePrice: parseInt(price),
+          PkgStartDate: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 7天后
+          PkgEndDate: new Date(
+            Date.now() + 14 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 14天后
+        };
 
         setPackageDetails({
-          PackageId: data.PackageId,
-          PkgName: data.PkgName || "Summer Vacation Package",
-          PkgBasePrice: data.PkgBasePrice ? parseInt(data.PkgBasePrice) : 1999,
-          PkgStartDate: data.PkgStartDate,
-          PkgEndDate: data.PkgEndDate,
+          ...mockData,
+          PkgStartDate: new Date(mockData.PkgStartDate),
+          PkgEndDate: new Date(mockData.PkgEndDate),
         });
+
+        // 设置默认旅行日期
+        setBookingInfo((prev) => ({
+          ...prev,
+          TripStart: new Date(mockData.PkgStartDate)
+            .toISOString()
+            .split("T")[0],
+          TripEnd: new Date(mockData.PkgEndDate).toISOString().split("T")[0],
+        }));
       } catch (err) {
         console.error("Fetch error:", err);
-        setError("Failed to load package details.");
+        setError("Failed to load package details. Please try again later.");
       }
     };
 
     fetchPackageDetails();
   }, [packageId, price, pkgName]);
 
-  function calculateDuration(startDate, endDate) {
-    if (!startDate || !endDate) {
-      console.warn("Missing start or end date:", { startDate, endDate });
-      return "N/A";
-    }
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    console.log("Parsed Start:", start);
-    console.log("Parsed End:", end);
-
-    // 计算天数差 +1（包含首尾两天）
-    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    console.log("diff daya", diffDays);
-
-    return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
-  }
-
-  useEffect(() => {
-    if (packageDetails?.PkgBasePrice > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        PackageId: packageId || "",
-        BasePrice: packageDetails.PkgBasePrice,
-      }));
-    }
-
-    if (packageDetails?.PkgStartDate && packageDetails?.PkgEndDate) {
-      const duration = calculateDuration(
-        packageDetails.PkgStartDate,
-        packageDetails.PkgEndDate
-      );
-      console.log("Package duration:", duration);
-    }
-  }, [packageDetails, packageId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Update primary traveler's email if customer email changes
-    if (name === "CustEmail") {
-      const updateCustomers = [...customers];
-      updateCustomers[0] = { ...updateCustomers[0], email: value };
-      setCustomers(updateCustomers);
-    }
+  // 格式化日期显示
+  const formatDate = (date) => {
+    if (!date) return "Not specified";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
-  // Handle form submission
+  // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
-      // Validate form data
+      // 验证主旅行者信息
       if (
-        !formData.CustFirstName ||
-        !formData.CustLastName ||
-        !formData.CustEmail
+        !primaryTraveler.CustFirstName ||
+        !primaryTraveler.CustLastName ||
+        !primaryTraveler.CustEmail
       ) {
-        throw new Error("Please fill in all required customer fields");
+        throw new Error(
+          "Please fill in all required primary traveler information"
+        );
       }
 
-      if (!formData.TripStart || !formData.TripEnd) {
-        throw new Error("Please select travel dates");
-      }
-
-      // Validate travelers
-      const invalidCustomer = customers.find((customer, index) =>
-        index === 0
-          ? false // Skip validation for primary traveler (customer)
-          : !customer.name || !customer.email
+      // 验证附加旅行者
+      const invalidTraveler = additionalTravelers.find(
+        (traveler) =>
+          !traveler.CustFirstName ||
+          !traveler.CustLastName ||
+          !traveler.CustEmail
       );
 
-      if (invalidCustomer) {
-        throw new Error("Please fill in all traveler names and emails");
+      if (invalidTraveler) {
+        throw new Error("Please fill in all required traveler information");
       }
 
-      // Calculate total price (first traveler is customer, each additional traveler adds one more package)
-      const totalPrice = packageDetails.PkgBasePrice * customers.length;
+      // 验证旅行日期
+      if (!bookingInfo.TripStart || !bookingInfo.TripEnd) {
+        throw new Error("Please select valid travel dates");
+      }
 
-      // Simulate API call
+      // 计算总价
+      const totalPrice =
+        packageDetails.PkgBasePrice * (additionalTravelers.length + 1);
+
+      // 构建预订数据
       const bookingData = {
-        customer: formData,
-        customers: customers,
+        primaryTraveler: {
+          ...primaryTraveler,
+          CustBusPhone: primaryTraveler.CustBusPhone || "",
+          CustomerId: Math.floor(Math.random() * 10000), // 临时ID
+          PackageId: packageDetails.PackageId,
+          CustProv: primaryTraveler.CustProv.slice(0, 2).toUpperCase() || "NA",
+
+          BasePrice: packageDetails.PkgBasePrice,
+        },
+        additionalTravelers,
         packageId: packageDetails.PackageId,
-        totalPrice: totalPrice,
-        numberOfCustomers: customers.length,
+        totalPrice,
+        travelDates: {
+          start: bookingInfo.TripStart,
+          end: bookingInfo.TripEnd,
+        },
       };
 
       console.log("Booking Data:", bookingData);
 
-      // Simulate successful booking
+      // 这里应该是实际的API调用
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || "Booking failed");
+      }
+
+      // 模拟成功提交
       setTimeout(() => {
         setSuccess(true);
         setIsSubmitting(false);
       }, 1000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error ? err.message : "An error occurred during booking"
+      );
       setIsSubmitting(false);
     }
   };
 
+  if (success) {
+    return (
+      <div className="mx-auto max-w-4xl rounded-lg border border-green-400 bg-green-100 p-6 text-green-700">
+        <h2 className="mb-4 text-2xl font-bold">Booking Successful!</h2>
+        <p className="mb-4">
+          Your booking has been confirmed. We will contact you shortly with more
+          details.
+        </p>
+        <Link
+          href="/"
+          className="inline-block rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
+        >
+          Return to Home
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {success ? (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-          <h2 className="text-xl font-bold mb-2">Booking Successful!</h2>
-          <p>
-            Your booking has been confirmed. We will contact you shortly with
-            more details.
-          </p>
-          <Link
-            href="/"
-            className="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-          >
-            Return to Home
-          </Link>
+    <div className="mx-auto max-w-4xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <h1 className="mb-6 text-3xl font-bold">
+          Booking: {packageDetails.PkgName}
+        </h1>
+
+        {/* 套餐详情 */}
+        <div className="rounded-lg bg-gray-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold">Package Details</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Package Name
+              </label>
+              <p className="mt-1 block w-full rounded-md border-gray-300 bg-white p-2 shadow-sm">
+                {packageDetails.PkgName}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-600">Price per Person</p>
+              <p className="font-medium text-green-600">
+                ${packageDetails.PkgBasePrice.toLocaleString()}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Start Date
+              </label>
+              <p className="mt-1 block w-full rounded-md border-gray-300 bg-white p-2 shadow-sm">
+                {formatDate(packageDetails.PkgStartDate)}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                End Date
+              </label>
+              <p className="mt-1 block w-full rounded-md border-gray-300 bg-white p-2 shadow-sm">
+                {formatDate(packageDetails.PkgEndDate)}
+              </p>
+            </div>
+          </div>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <h1 className="text-3xl font-bold mb-6">
-            Booking: {packageDetails.PkgName}
-          </h1>
 
-          {/* Package Details Section */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Package Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Package Name
-                </label>
-                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
-                  {packageDetails.PkgName}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-600">Price per Person</p>
-                <p className="font-medium text-green-600">
-                  ${packageDetails.PkgBasePrice.toLocaleString()}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Start Date
-                </label>
-                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
-                  {packageDetails.PkgStartDate || "Not specified"}
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  End Date
-                </label>
-                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
-                  {packageDetails.PkgEndDate || "Not specified"}
-                </p>
-              </div>
+        {/* 旅行日期 */}
+        <div className="rounded-lg bg-gray-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold">Travel Dates</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Start Date *
+              </label>
+              <input
+                type="date"
+                name="TripStart"
+                value={bookingInfo.TripStart}
+                onChange={handleBookingInfoChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                End Date *
+              </label>
+              <input
+                type="date"
+                name="TripEnd"
+                value={bookingInfo.TripEnd}
+                onChange={handleBookingInfoChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+                min={
+                  bookingInfo.TripStart ||
+                  new Date().toISOString().split("T")[0]
+                }
+              />
             </div>
           </div>
+        </div>
 
-          {/* Additional Travelers Section */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Additional Travelers</h2>
-            <p className="text-gray-600 mb-4">
-              Add additional travelers sharing this booking. Each traveler will
-              be charged the full package price.
-            </p>
-
-            {customers.map((customer, index) => (
-              <div
-                key={index}
-                className="mb-4 p-4 bg-white rounded-lg border border-gray-200"
+        {/* 主旅行者信息 */}
+        <div className="rounded-lg bg-gray-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold">Primary Traveler *</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                First Name *
+              </label>
+              <input
+                type="text"
+                name="CustFirstName"
+                value={primaryTraveler.CustFirstName}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Last Name *
+              </label>
+              <input
+                type="text"
+                name="CustLastName"
+                value={primaryTraveler.CustLastName}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email *
+              </label>
+              <input
+                type="email"
+                name="CustEmail"
+                value={primaryTraveler.CustEmail}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Phone *
+              </label>
+              <input
+                type="tel"
+                name="CustHomePhone"
+                value={primaryTraveler.CustHomePhone}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <input
+                type="text"
+                name="CustAddress"
+                value={primaryTraveler.CustAddress}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                City
+              </label>
+              <input
+                type="text"
+                name="CustCity"
+                value={primaryTraveler.CustCity}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Province/State
+              </label>
+              <select
+                type="text"
+                name="CustProv"
+                value={primaryTraveler.CustProv}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                style={{ height: "46px" }}
               >
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-medium">
-                    {index === 0 ? "Primary Customer" : `Customer ${index}`}
-                  </h4>
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => removeCustomer(index)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Remove
-                    </button>
-                  )}
+                <option value="">Select Province</option>
+                <option value="AB">Alberta</option>
+                <option value="BC">British Columbia</option>
+                <option value="ON">Ontario</option>
+                <option value="QC">Quebec</option>
+                <option value="MB">Manitoba</option>
+                {/* Add others as needed */}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Postal Code
+              </label>
+              <input
+                type="text"
+                name="CustPostal"
+                value={primaryTraveler.CustPostal}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Country
+              </label>
+              <input
+                type="text"
+                name="CustCountry"
+                value={primaryTraveler.CustCountry}
+                onChange={handlePrimaryTravelerChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 附加旅行者 */}
+        <div className="rounded-lg bg-gray-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold">Additional Travelers</h2>
+          <p className="mb-4 text-gray-600">
+            Add additional travelers sharing this booking. Each traveler will be
+            charged the full package price.
+          </p>
+
+          {additionalTravelers.map((traveler, index) => (
+            <div
+              key={index}
+              className="mb-4 rounded-lg border border-gray-200 bg-white p-4"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <h4 className="font-medium">Traveler {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeTraveler(index)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  Remove
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={traveler.CustFirstName}
+                    onChange={(e) =>
+                      handleAdditionalTravelerChange(
+                        index,
+                        "CustFirstName",
+                        e.target.value
+                      )
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    required
+                  />
                 </div>
-                {/*  */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      First Name {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustFirstName}
-                      onChange={(e) =>
-                        handleCustomerChange(
-                          index,
-                          "CustFirstName",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Last Name {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustLastName}
-                      onChange={(e) =>
-                        handleCustomerChange(
-                          index,
-                          "CustLastName",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  {/*  */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Email {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="email"
-                      value={customer.email}
-                      onChange={(e) =>
-                        handleCustomerChange(index, "email", e.target.value)
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  {/*  */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Phone {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.phone}
-                      onChange={(e) =>
-                        handleCustomerChange(index, "phone", e.target.value)
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Adress {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustAddress}
-                      onChange={(e) =>
-                        handleCustomerChange(
-                          index,
-                          "CustAdress",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      City {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustCity}
-                      onChange={(e) =>
-                        handleCustomerChange(index, "CustCity", e.target.value)
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Province {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustProv}
-                      onChange={(e) =>
-                        handleCustomerChange(index, "CustProv", e.target.value)
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Postal Code {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustPostal}
-                      onChange={(e) =>
-                        handleCustomerChange(
-                          index,
-                          "CustPostal",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Country {index === 0 ? "" : "*"}
-                    </label>
-                    <input
-                      type="text"
-                      value={customer.CustCountry}
-                      onChange={(e) =>
-                        handleCustomerChange(
-                          index,
-                          "CustCountry",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                      required={index > 0}
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Last Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={traveler.CustLastName}
+                    onChange={(e) =>
+                      handleAdditionalTravelerChange(
+                        index,
+                        "CustLastName",
+                        e.target.value
+                      )
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={traveler.CustEmail}
+                    onChange={(e) =>
+                      handleAdditionalTravelerChange(
+                        index,
+                        "CustEmail",
+                        e.target.value
+                      )
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={traveler.CustHomePhone}
+                    onChange={(e) =>
+                      handleAdditionalTravelerChange(
+                        index,
+                        "CustHomePhone",
+                        e.target.value
+                      )
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
                 </div>
               </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={addCustomer}
-              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
-            >
-              Add Another Traveler
-            </button>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
             </div>
-          )}
+          ))}
 
-          {/* Total Price */}
-          <div className="bg-gray-50 p-6 rounded-lg text-right">
-            <h2 className="text-xl font-semibold">
-              Total Price: $
-              {(
-                packageDetails.PkgBasePrice * customers.length
-              ).toLocaleString()}
-            </h2>
-            <p className="text-gray-600">
-              {customers.length} traveler(s) at $
-              {packageDetails.PkgBasePrice.toLocaleString()} each
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={addTraveler}
+            className="mt-4 rounded bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700"
+          >
+            Add Another Traveler
+          </button>
+        </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-between">
-            <Link
-              href={`/vacation-package`}
-              className="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400"
-            >
-              Back to Package
-            </Link>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-indigo-600 text-white px-8 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {isSubmitting ? "Processing..." : "Confirm Booking"}
-            </button>
+        {/* 错误信息 */}
+        {error && (
+          <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+            {error}
           </div>
-        </form>
-      )}
+        )}
+
+        {/* 总价 */}
+        <div className="rounded-lg bg-gray-50 p-6 text-right">
+          <h2 className="text-xl font-semibold">
+            Total Price: $
+            {(
+              packageDetails.PkgBasePrice *
+              (additionalTravelers.length + 1)
+            ).toLocaleString()}
+          </h2>
+          <p className="text-gray-600">
+            {additionalTravelers.length + 1} traveler(s) at $
+            {packageDetails.PkgBasePrice.toLocaleString()} each
+          </p>
+        </div>
+
+        {/* 表单操作 */}
+        <div className="flex justify-between">
+          <Link
+            href="/vacation-package"
+            className="rounded bg-gray-300 px-6 py-2 text-gray-800 hover:bg-gray-400"
+          >
+            Back to Packages
+          </Link>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="disabled:opacity-50 rounded bg-indigo-600 px-8 py-2 text-white hover:bg-indigo-700"
+          >
+            {isSubmitting ? "Processing..." : "Confirm Booking"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

@@ -29,6 +29,37 @@ export async function UserCommentAction(formData) {
   redirect("/");
 }
 
+export async function UserBookingAction2(formData) {
+  const CustFirstName = formData.get("CustFirstName");
+  const CustLastName = formData.get("CustLastName");
+  const CustAddress = formData.get("CustAddress");
+  const CustHomePhone = formData.get("CustHomePhone");
+  const CustBusPhone = formData.get("CustBusPhone");
+  const CustCity = formData.get("CustCity");
+  const CustProv = formData.get("CustProv");
+  const CustCountry = formData.get("CustCountry");
+  const CustEmail = formData.get("CustEmail");
+  const CustPostal = formData.get("CustPostal");
+
+  await createCustomers({
+    CustFirstName,
+    CustLastName,
+    CustAddress,
+    CustHomePhone,
+    CustBusPhone,
+    CustCity,
+    CustProv,
+    CustCountry,
+    CustEmail,
+    CustPostal,
+  });
+
+  //refreshes or updates the page by fetching from the database
+  revalidatePath("/registerpage");
+  // redirect("/login");
+  return { success: true };
+}
+
 import { createBooking } from "./bookingdetails";
 
 // Submit booking action
