@@ -48,15 +48,21 @@ export default function BookingPage() {
 
     const fetchPackageDetails = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const res = await fetch(`/api/package/${packageId}`);
+        if (!res.ok) throw new Error("Failed to fetch");
+
+        const data = await res.json();
+        console.log("Fetched package data:", data); // Debug log
+
         setPackageDetails({
-          PackageId: packageId,
-          PkgName: pkgName || "Summer Vacation Package",
-          PkgBasePrice: price ? parseInt(price) : 1999,
-          PkgStartDate: "2024-01-01",
-          PkgEndDate: "2024-01-07",
+          PackageId: data.PackageId,
+          PkgName: data.PkgName || "Summer Vacation Package",
+          PkgBasePrice: data.PkgBasePrice ? parseInt(data.PkgBasePrice) : 1999,
+          PkgStartDate: data.PkgStartDate,
+          PkgEndDate: data.PkgEndDate,
         });
       } catch (err) {
+        console.error("Fetch error:", err);
         setError("Failed to load package details.");
       }
     };
@@ -65,38 +71,45 @@ export default function BookingPage() {
   }, [packageId, price, pkgName]);
 
   function calculateDuration(startDate, endDate) {
-    // console.log("start date", startDate);
-    //if (!startDate || !endDate) return "N/A";
+    if (!startDate || !endDate) {
+      console.warn("Missing start or end date:", { startDate, endDate });
+      return "N/A";
+    }
 
-    const startDateStr = startDate.split(" ")[0];
-    const endDateStr = endDate.split(" ")[0];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-    // const start = new Date(startDateStr);
-    // const end = new Date(endDateStr);
-    const start = new Date(startDateStr);
-    const end = new Date(endDateStr);
-    //  console.log(start, end);
+    console.log("Parsed Start:", start);
+    console.log("Parsed End:", end);
 
-    //  const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    // console.log("diff daya", diffDays);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      console.error("Invalid date format:", { startDate, endDate });
+      return "N/A";
+    }
+
     const durationInMs = end - start;
     const durationInDays = durationInMs / (1000 * 60 * 60 * 24);
-    console.log("Start:", packageDetails.PkgStartDate);
-    console.log("End:", packageDetails.PkgEndDate);
-    return Math.ceil(durationInDays);
 
-    //  return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
+    return Math.ceil(durationInDays);
   }
 
   useEffect(() => {
-    if (packageDetails.PkgBasePrice > 0) {
+    if (packageDetails?.PkgBasePrice > 0) {
       setFormData((prev) => ({
         ...prev,
         PackageId: packageId || "",
         BasePrice: packageDetails.PkgBasePrice,
       }));
     }
-  }, [packageDetails.PkgBasePrice, packageId]);
+
+    if (packageDetails?.PkgStartDate && packageDetails?.PkgEndDate) {
+      const duration = calculateDuration(
+        packageDetails.PkgStartDate,
+        packageDetails.PkgEndDate
+      );
+      console.log("Package duration:", duration);
+    }
+  }, [packageDetails, packageId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
