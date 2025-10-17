@@ -15,11 +15,11 @@ export async function getAllbookings() {
 }
 
 // Get booking detail by ID
-export async function getBookingDetailById(id) {
+export async function getBookingsById(id) {
   try {
     const [bookingdetail] = await db.query(
       `
-      SELECT * FROM bookingdetails
+      SELECT * FROM bookings
       WHERE BookingDetailId = ?
     `,
       [id]
@@ -59,7 +59,7 @@ export async function createBookings(bookingData) {
 
     return result.insertId;
   } catch (error) {
-    console.error("Error creating booking:", error);
+    console.error("Error creating bookings:", error);
     throw error;
   }
 }

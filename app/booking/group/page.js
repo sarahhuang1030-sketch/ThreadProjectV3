@@ -56,9 +56,9 @@ export default function GroupBookingPage() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* main booker */}
           <div className="rounded-lg bg-gray-50 p-6 shadow-inner">
-            <h3 className="mb-4 text-lg font-semibold text-gray-700">
+            <h2 className="mb-4 text-lg font-semibold text-gray-700">
               main booker
-            </h3>
+            </h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -94,9 +94,9 @@ export default function GroupBookingPage() {
           {/* companions */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-700">
+              <h2 className="text-lg font-semibold text-gray-700">
                 traveling companions (Total: {travelers.length} person)
-              </h3>
+              </h2>
               <button
                 type="button"
                 onClick={addTraveler}

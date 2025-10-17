@@ -2,15 +2,28 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
+import { HeadingPic } from "../../components/Heading";
+// import Link from "next/link";
+import { Abril_Fatface } from "next/font/google";
+
+const abrilFatface = Abril_Fatface({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-abril-fatface", // Optional: for CSS variable usage
+});
 
 export default function BookingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Package parameters from URL
   const packageId = searchParams.get("packageId");
   const price = searchParams.get("price");
   const pkgName = searchParams.get("name");
 
+  // Package details state
   const [packageDetails, setPackageDetails] = useState({
     PackageId: packageId || "",
     PkgName: pkgName || "LOADING...",
@@ -19,18 +32,22 @@ export default function BookingPage() {
     PkgEndDate: "",
   });
 
+  // Form data state (including customer fields)
   const [formData, setFormData] = useState({
+    // Customer fields
     CustomerId: Math.floor(Math.random() * 10000),
     CustFirstName: "",
     CustLastName: "",
     CustEmail: "",
-    CustHomePhone: "",
-    CustBusPhone: "",
+    // CustHomePhone: "",
+    // CustBusPhone: "",
     CustAddress: "",
     CustCity: "",
     CustProv: "",
     CustPostal: "",
     CustCountry: "",
+
+    // Booking fields
     TripStart: "",
     TripEnd: "",
     Description: "",
@@ -39,10 +56,59 @@ export default function BookingPage() {
     PackageId: packageId || "",
   });
 
+  // Travelers state (customer is automatically the first traveler)
+  const [customers, setCustomers] = useState([
+    {
+      firstname: formData.CustFirstName,
+      endname: formData.CustEndName,
+      address: formData.CustAddress,
+      city: formData.CustCity,
+      province: formData.CustProv,
+      country: formData.CustCountry,
+      postal: formData.CustPostal,
+      email: formData.CustEmail,
+    },
+  ]);
+
+  // Function to add traveler
+  const addCustomer = () => {
+    setCustomers([
+      ...customers,
+      {
+        firstname: "",
+        endname: "",
+        address: "",
+        city: "",
+        province: "",
+        country: "",
+        postal: "",
+        email: "",
+      },
+    ]);
+  };
+
+  // Function to remove traveler
+  const removeCustomer = (index) => {
+    if (index === 0) return; // Can't remove the primary traveler (customer)
+    setCustomers(customers.filter((_, i) => i !== index));
+  };
+
+  // Function to handle traveler input changes
+  const handleCustomerChange = (index, field, value) => {
+    const updateCustomers = [...customers];
+    updateCustomers[index] = {
+      ...updateCustomers[index],
+      [field]: value,
+    };
+    setCustomers(updateCustomers);
+  };
+
+  // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  // Fetch package details
   useEffect(() => {
     if (!packageId) return;
 
@@ -82,15 +148,11 @@ export default function BookingPage() {
     console.log("Parsed Start:", start);
     console.log("Parsed End:", end);
 
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      console.error("Invalid date format:", { startDate, endDate });
-      return "N/A";
-    }
+    // 计算天数差 +1（包含首尾两天）
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    console.log("diff daya", diffDays);
 
-    const durationInMs = end - start;
-    const durationInDays = durationInMs / (1000 * 60 * 60 * 24);
-
-    return Math.ceil(durationInDays);
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
   }
 
   useEffect(() => {
@@ -113,301 +175,365 @@ export default function BookingPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Update primary traveler's email if customer email changes
+    if (name === "CustEmail") {
+      const updateCustomers = [...customers];
+      updateCustomers[0] = { ...updateCustomers[0], email: value };
+      setCustomers(updateCustomers);
+    }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
+      // Validate form data
       if (
         !formData.CustFirstName ||
         !formData.CustLastName ||
-        !formData.CustEmail ||
-        !formData.CustHomePhone
+        !formData.CustEmail
       ) {
-        throw new Error("Please fill in your name and email.");
+        throw new Error("Please fill in all required customer fields");
       }
 
-      console.log("Submit booking data:", formData);
-      // Uncomment when API is ready
-      // const response = await fetch("/api/bookings", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(formData),
-      // });
+      if (!formData.TripStart || !formData.TripEnd) {
+        throw new Error("Please select travel dates");
+      }
 
-      // const result = await response.json();
-      // if (!response.ok || !result.success) {
-      //   throw new Error(result.error || "Booking failed");
-      // }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setSuccess(true);
-
-      setTimeout(() => {
-        router.push(`/booking/thank-you?packageId=${packageId}`);
-      }, 2000);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred during booking."
+      // Validate travelers
+      const invalidCustomer = customers.find((customer, index) =>
+        index === 0
+          ? false // Skip validation for primary traveler (customer)
+          : !customer.name || !customer.email
       );
-    } finally {
+
+      if (invalidCustomer) {
+        throw new Error("Please fill in all traveler names and emails");
+      }
+
+      // Calculate total price (first traveler is customer, each additional traveler adds one more package)
+      const totalPrice = packageDetails.PkgBasePrice * customers.length;
+
+      // Simulate API call
+      const bookingData = {
+        customer: formData,
+        customers: customers,
+        packageId: packageDetails.PackageId,
+        totalPrice: totalPrice,
+        numberOfCustomers: customers.length,
+      };
+
+      console.log("Booking Data:", bookingData);
+
+      // Simulate successful booking
+      setTimeout(() => {
+        setSuccess(true);
+        setIsSubmitting(false);
+      }, 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
       setIsSubmitting(false);
     }
   };
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
-          <div className="text-green-500 text-5xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold mb-4">Booking successful!</h2>
-          <p className="text-gray-600 mb-6">
-            Thank you for your reservation, we are processing your request.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">
-            Booking {packageDetails.PkgName}
+    <div className="max-w-4xl mx-auto p-6">
+      {success ? (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+          <h2 className="text-xl font-bold mb-2">Booking Successful!</h2>
+          <p>
+            Your booking has been confirmed. We will contact you shortly with
+            more details.
+          </p>
+          <Link
+            href="/"
+            className="mt-4 inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          >
+            Return to Home
+          </Link>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <h1 className="text-3xl font-bold mb-6">
+            Booking: {packageDetails.PkgName}
           </h1>
 
-          <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-            <h2 className="text-xl font-semibold text-blue-800 mb-2">
-              Package information
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
+          {/* Package Details Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Package Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600">Duration</p>
-                <p className="font-medium">
-                  {calculateDuration(
-                    packageDetails.PkgStartDate,
-                    packageDetails.PkgEndDate
-                  )}
+                <label className="block text-sm font-medium text-gray-700">
+                  Package Name
+                </label>
+                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                  {packageDetails.PkgName}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-600">Price per Person</p>
+                <p className="font-medium text-green-600">
+                  ${packageDetails.PkgBasePrice.toLocaleString()}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Start Date
+                </label>
+                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                  {packageDetails.PkgStartDate || "Not specified"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Price</p>
-                <p className="font-medium text-green-600">
-                  ${packageDetails.PkgBasePrice.toLocaleString()}
+                <label className="block text-sm font-medium text-gray-700">
+                  End Date
+                </label>
+                <p className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                  {packageDetails.PkgEndDate || "Not specified"}
                 </p>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="CustFirstName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  First name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="CustFirstName"
-                  name="CustFirstName"
-                  value={formData.CustFirstName}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
+          {/* Additional Travelers Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Additional Travelers</h2>
+            <p className="text-gray-600 mb-4">
+              Add additional travelers sharing this booking. Each traveler will
+              be charged the full package price.
+            </p>
 
-              <div>
-                <label
-                  htmlFor="CustLastName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Last name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="CustLastName"
-                  name="CustLastName"
-                  value={formData.CustLastName}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustEmail"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="CustEmail"
-                  name="CustEmail"
-                  value={formData.CustEmail}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustHomePhone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Home Phone <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="CustHomePhone"
-                  name="CustHomePhone"
-                  value={formData.CustHomePhone}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustBusPhone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Business Phone
-                </label>
-                <input
-                  type="text"
-                  id="CustBusPhone"
-                  name="CustBusPhone"
-                  value={formData.CustBusPhone}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustAddress"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="CustAddress"
-                  name="CustAddress"
-                  value={formData.CustAddress}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustCity"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  City
-                </label>
-                <input
-                  type="text"
-                  id="CustCity"
-                  name="CustCity"
-                  value={formData.CustCity}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustProv"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Province
-                </label>
-                <input
-                  type="text"
-                  id="CustProv"
-                  name="CustProv"
-                  value={formData.CustProv}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustPostal"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  id="CustPostal"
-                  name="CustPostal"
-                  value={formData.CustPostal}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="CustCountry"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Country
-                </label>
-                <input
-                  type="text"
-                  id="CustCountry"
-                  name="CustCountry"
-                  value={formData.CustCountry}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
-                {error}
-              </div>
-            )}
-
-            <div className="flex justify-between items-center">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors"
+            {customers.map((customer, index) => (
+              <div
+                key={index}
+                className="mb-4 p-4 bg-white rounded-lg border border-gray-200"
               >
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors ${
-                  isSubmitting ? "opacity-75 cursor-not-allowed" : ""
-                }`}
-              >
-                {isSubmitting ? "Processing..." : "Submit booking"}
-              </button>
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="font-medium">
+                    {index === 0 ? "Primary Customer" : `Customer ${index}`}
+                  </h4>
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => removeCustomer(index)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                {/*  */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      First Name {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustFirstName}
+                      onChange={(e) =>
+                        handleCustomerChange(
+                          index,
+                          "CustFirstName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Last Name {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustLastName}
+                      onChange={(e) =>
+                        handleCustomerChange(
+                          index,
+                          "CustLastName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  {/*  */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="email"
+                      value={customer.email}
+                      onChange={(e) =>
+                        handleCustomerChange(index, "email", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  {/*  */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Phone {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.phone}
+                      onChange={(e) =>
+                        handleCustomerChange(index, "phone", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Adress {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustAddress}
+                      onChange={(e) =>
+                        handleCustomerChange(
+                          index,
+                          "CustAdress",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      City {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustCity}
+                      onChange={(e) =>
+                        handleCustomerChange(index, "CustCity", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Province {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustProv}
+                      onChange={(e) =>
+                        handleCustomerChange(index, "CustProv", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Postal Code {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustPostal}
+                      onChange={(e) =>
+                        handleCustomerChange(
+                          index,
+                          "CustPostal",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Country {index === 0 ? "" : "*"}
+                    </label>
+                    <input
+                      type="text"
+                      value={customer.CustCountry}
+                      onChange={(e) =>
+                        handleCustomerChange(
+                          index,
+                          "CustCountry",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      required={index > 0}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addCustomer}
+              className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+            >
+              Add Another Traveler
+            </button>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {error}
             </div>
-          </form>
-        </div>
-      </div>
+          )}
+
+          {/* Total Price */}
+          <div className="bg-gray-50 p-6 rounded-lg text-right">
+            <h2 className="text-xl font-semibold">
+              Total Price: $
+              {(
+                packageDetails.PkgBasePrice * customers.length
+              ).toLocaleString()}
+            </h2>
+            <p className="text-gray-600">
+              {customers.length} traveler(s) at $
+              {packageDetails.PkgBasePrice.toLocaleString()} each
+            </p>
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex justify-between">
+            <Link
+              href={`/vacation-package`}
+              className="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400"
+            >
+              Back to Package
+            </Link>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-indigo-600 text-white px-8 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {isSubmitting ? "Processing..." : "Confirm Booking"}
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
