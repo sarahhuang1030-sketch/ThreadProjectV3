@@ -279,7 +279,7 @@ export default function RegisterPage({ customers }) {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Province *
               </label>
-              <input
+              <select
                 onChange={(e) => {
                   setProv(e.target.value);
                   validate("CustProv", e.target.value);
@@ -289,7 +289,22 @@ export default function RegisterPage({ customers }) {
                 type="text"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
+              >
+                <option value="">Select a province</option>
+                <option value="AB">AB - Alberta</option>
+                <option value="BC">BC - British Columbia</option>
+                <option value="MB">MB - Manitoba</option>
+                <option value="NB">NB- New Brunswick</option>
+                <option value="NL">NL - Newfoundland and Labrador</option>
+                <option value="NS">NS - Nova Scotia</option>
+                <option value="ON">ON - Ontario</option>
+                <option value="PE">PE - Prince Edward Island</option>
+                <option value="QC">QC - Quebec</option>
+                <option value="SK">SK - Saskatchewan</option>
+                <option value="NT">NT - Northwest Territories</option>
+                <option value="NU">NU - Nunavut</option>
+                <option value="YT">YT - Yukon</option>
+              </select>
               {errors.CustProv && (
                 <span className="error">{errors.CustProv}</span>
               )}

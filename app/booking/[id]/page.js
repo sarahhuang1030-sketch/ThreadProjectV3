@@ -114,15 +114,21 @@ export default function BookingPage() {
 
     const fetchPackageDetails = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const res = await fetch(`/api/package/${packageId}`);
+        if (!res.ok) throw new Error("Failed to fetch");
+
+        const data = await res.json();
+        console.log("Fetched package data:", data); // Debug log
+
         setPackageDetails({
-          PackageId: packageId,
-          PkgName: pkgName || "Summer Vacation Package",
-          PkgBasePrice: price ? parseInt(price) : 1999,
-          PkgStartDate: "2024-01-01",
-          PkgEndDate: "2024-01-07",
+          PackageId: data.PackageId,
+          PkgName: data.PkgName || "Summer Vacation Package",
+          PkgBasePrice: data.PkgBasePrice ? parseInt(data.PkgBasePrice) : 1999,
+          PkgStartDate: data.PkgStartDate,
+          PkgEndDate: data.PkgEndDate,
         });
       } catch (err) {
+        console.error("Fetch error:", err);
         setError("Failed to load package details.");
       }
     };
@@ -130,7 +136,43 @@ export default function BookingPage() {
     fetchPackageDetails();
   }, [packageId, price, pkgName]);
 
-  // Handle form input changes
+  function calculateDuration(startDate, endDate) {
+    if (!startDate || !endDate) {
+      console.warn("Missing start or end date:", { startDate, endDate });
+      return "N/A";
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    console.log("Parsed Start:", start);
+    console.log("Parsed End:", end);
+
+    // 计算天数差 +1（包含首尾两天）
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    console.log("diff daya", diffDays);
+
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"}`;
+  }
+
+  useEffect(() => {
+    if (packageDetails?.PkgBasePrice > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        PackageId: packageId || "",
+        BasePrice: packageDetails.PkgBasePrice,
+      }));
+    }
+
+    if (packageDetails?.PkgStartDate && packageDetails?.PkgEndDate) {
+      const duration = calculateDuration(
+        packageDetails.PkgStartDate,
+        packageDetails.PkgEndDate
+      );
+      console.log("Package duration:", duration);
+    }
+  }, [packageDetails, packageId]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({

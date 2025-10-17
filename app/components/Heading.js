@@ -16,11 +16,9 @@ export function HeadingPic({
   heading = "Vacation Package",
 }) {
   useEffect(() => {
-    AOS.init({
-      once: false,
-    });
-    AOS.refresh();
+    AOS.init({ once: false });
   }, []);
+
   return (
     <div className={`container-home ${bgClass}`}>
       <div className="row justify-content-center align-items-center content-mid">
