@@ -74,15 +74,13 @@ export default function BookingDetailList({ bookingDetails }) {
               <div className="mt-4 flex justify-between items-center">
                 {!isExpired ? (
                   <Link
-                    href={{
-                      pathname: `/booking/detail/${detail.BookingDetailId}`,
-                      query: {
-                        detailId: detail.BookingDetailId,
-                        itineraryNo: detail.ItineraryNo,
-                        destination: detail.Destination,
-                        price: detail.BasePrice,
-                      },
-                    }}
+                    href={`/booking/detail/${detail.BookingDetailId}?detailId=${
+                      detail.BookingDetailId
+                    }&itineraryNo=${
+                      detail.ItineraryNo
+                    }&destination=${encodeURIComponent(
+                      detail.Destination
+                    )}&price=${detail.BasePrice}`}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
                   >
                     View Details

@@ -27,7 +27,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white heading">
           <h4>See More Details</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 w-full sm:w-auto">
@@ -45,7 +45,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

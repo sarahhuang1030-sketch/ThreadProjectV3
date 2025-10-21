@@ -5,6 +5,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function BookingPage() {
+  const [CustFirstName, setFirstname] = useState("");
+  const [CustLastName, setLastname] = useState("");
+  const [CustAddress, setAddress] = useState("");
+  const [CustCity, setCity] = useState("");
+  const [CustProv, setProv] = useState("");
+  const [CustPostal, setPostal] = useState("");
+  const [CustCountry, setCountry] = useState("");
+  const [CustHomePhone, setHomePhone] = useState("");
+  const [CustBusPhone, setBusPhone] = useState("");
+  const [CustEmail, setEmail] = useState("");
+  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -12,25 +24,6 @@ export default function BookingPage() {
   const packageId = searchParams.get("packageId");
   const price = searchParams.get("price");
   const pkgName = searchParams.get("name");
-
-  // 验证必要参数是否存在
-  if (!packageId || !price) {
-    return (
-      <div className="mx-auto max-w-4xl p-6 text-center text-red-600">
-        <h1 className="mb-4 text-2xl font-bold">Invalid Booking Request</h1>
-        <p className="mb-4">
-          Missing required package information. Please return to the packages
-          page and try again.
-        </p>
-        <Link
-          href="/vacation-package"
-          className="rounded bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700"
-        >
-          Return to Packages
-        </Link>
-      </div>
-    );
-  }
 
   // Package details state
   const [packageDetails, setPackageDetails] = useState({
@@ -68,6 +61,136 @@ export default function BookingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const isFormValid = () => {
+    const requiredFields = [
+      "CustFirstName",
+      "CustLastName",
+      "CustAddress",
+      "CustCity",
+      "CustProv",
+      "CustPostal",
+      "CustCountry",
+      "CustHomePhone",
+      "CustEmail",
+    ];
+
+    return requiredFields.every((field) => {
+      const value = primaryTraveler[field]?.trim();
+      return value && !errors[field];
+    });
+  };
+
+  // 获取套餐详情
+  useEffect(() => {
+    const fetchPackageDetails = async () => {
+      try {
+        // 模拟API响应
+        const mockData = {
+          PackageId: packageId,
+          PkgName: pkgName || "Summer Vacation Package",
+          PkgBasePrice: parseInt(price),
+          PkgStartDate: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 7天后
+          PkgEndDate: new Date(
+            Date.now() + 14 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 14天后
+        };
+
+        setPackageDetails({
+          ...mockData,
+          PkgStartDate: new Date(mockData.PkgStartDate),
+          PkgEndDate: new Date(mockData.PkgEndDate),
+        });
+
+        // 设置默认旅行日期
+        setBookingInfo((prev) => ({
+          ...prev,
+          TripStart: new Date(mockData.PkgStartDate)
+            .toISOString()
+            .split("T")[0],
+          TripEnd: new Date(mockData.PkgEndDate).toISOString().split("T")[0],
+        }));
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError("Failed to load package details. Please try again later.");
+      }
+    };
+
+    fetchPackageDetails();
+  }, [packageId, price, pkgName]);
+
+  const patterns = {
+    //allows letters (uppercase and lowercase), accents, and hyphens, and requires at least two characters.
+    CustFirstName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
+    CustLastName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
+    CustHomePhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
+    // CustBusPhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
+    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    CustAddress: /^[0-9]+\s+[A-Za-z\s]+$/,
+    //\d{4}          # Exactly 4 digits
+    //[\s\-]?        # Optional space or hyphen
+    //  year: /^y[1-4]$/,
+    CustPostal: /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i,
+  };
+
+  const validate = (field, value) => {
+    try {
+      const trimmed = value?.trim();
+      const messages = {
+        CustFirstName: "Please enter your first name.",
+        CustLastName: "Please enter your last name.",
+        CustAddress: "Please enter your address.",
+        CustCity: "Please enter your city.",
+        CustProv: "Please select your province.",
+        CustPostal: "Postal code must follow Canadian format (e.g., T2N 1N4).",
+        CustCountry: "Please enter your country.",
+        CustHomePhone: "Phone number must be at least 10 digits.",
+        //  CustBusPhone: "Phone number must be at least 10 digits.",
+        CustEmail: "Please enter your email (e.g. example@example.com).",
+      };
+
+      if (!trimmed) {
+        setErrors((prev) => ({
+          ...prev,
+          [field]: messages[field] || `${field} is required.`,
+        }));
+      } else if (patterns[field] && !patterns[field].test(trimmed)) {
+        setErrors((prev) => ({
+          ...prev,
+          [field]: messages[field],
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, [field]: null }));
+      }
+    } catch (err) {
+      console.error(`Validation error for ${field}:`, err);
+      setErrors((prev) => ({
+        ...prev,
+        [field]: `Error validating ${field}`,
+      }));
+    }
+  };
+
+  // 验证必要参数是否存在
+  if (!packageId || !price) {
+    return (
+      <div className="mx-auto max-w-4xl p-6 text-center text-red-600">
+        <h1 className="mb-4 text-2xl font-bold">Invalid Booking Request</h1>
+        <p className="mb-4">
+          Missing required package information. Please return to the packages
+          page and try again.
+        </p>
+        <Link
+          href="/vacation-package"
+          className="rounded bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700"
+        >
+          Return to Packages
+        </Link>
+      </div>
+    );
+  }
 
   // 添加旅行者
   const addTraveler = () => {
@@ -111,46 +234,6 @@ export default function BookingPage() {
       [name]: value,
     }));
   };
-
-  // 获取套餐详情
-  useEffect(() => {
-    const fetchPackageDetails = async () => {
-      try {
-        // 模拟API响应
-        const mockData = {
-          PackageId: packageId,
-          PkgName: pkgName || "Summer Vacation Package",
-          PkgBasePrice: parseInt(price),
-          PkgStartDate: new Date(
-            Date.now() + 7 * 24 * 60 * 60 * 1000
-          ).toISOString(), // 7天后
-          PkgEndDate: new Date(
-            Date.now() + 14 * 24 * 60 * 60 * 1000
-          ).toISOString(), // 14天后
-        };
-
-        setPackageDetails({
-          ...mockData,
-          PkgStartDate: new Date(mockData.PkgStartDate),
-          PkgEndDate: new Date(mockData.PkgEndDate),
-        });
-
-        // 设置默认旅行日期
-        setBookingInfo((prev) => ({
-          ...prev,
-          TripStart: new Date(mockData.PkgStartDate)
-            .toISOString()
-            .split("T")[0],
-          TripEnd: new Date(mockData.PkgEndDate).toISOString().split("T")[0],
-        }));
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError("Failed to load package details. Please try again later.");
-      }
-    };
-
-    fetchPackageDetails();
-  }, [packageId, price, pkgName]);
 
   // 格式化日期显示
   const formatDate = (date) => {
@@ -315,7 +398,7 @@ export default function BookingPage() {
         </div>
 
         {/* 旅行日期 */}
-        <div className="rounded-lg bg-gray-50 p-6">
+        {/* <div className="rounded-lg bg-gray-50 p-6">
           <h2 className="mb-4 text-xl font-semibold">Travel Dates</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
@@ -350,7 +433,7 @@ export default function BookingPage() {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* 主旅行者信息 */}
         <div className="rounded-lg bg-gray-50 p-6">
@@ -364,11 +447,24 @@ export default function BookingPage() {
                 type="text"
                 name="CustFirstName"
                 value={primaryTraveler.CustFirstName}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+
+                  setFirstname(e.target.value);
+                  validate("CustFirstName", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustFirstName", primaryTraveler.CustFirstName)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
               />
+              {errors?.CustFirstName && (
+                <span className="error">{errors.CustFirstName}</span>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Last Name *
@@ -377,10 +473,21 @@ export default function BookingPage() {
                 type="text"
                 name="CustLastName"
                 value={primaryTraveler.CustLastName}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setLastname(e.target.value);
+                  validate("CustLastName", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustLastName", primaryTraveler.CustLastName)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
               />
+              {errors?.CustLastName && (
+                <span className="error">{errors.CustLastName}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -390,10 +497,19 @@ export default function BookingPage() {
                 type="email"
                 name="CustEmail"
                 value={primaryTraveler.CustEmail}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setEmail(e.target.value);
+                  validate("CustEmail", e.target.value);
+                }}
+                onBlur={() => validate("CustEmail", primaryTraveler.CustEmail)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
               />
+              {errors?.CustEmail && (
+                <span className="error">{errors.CustEmail}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -403,10 +519,21 @@ export default function BookingPage() {
                 type="tel"
                 name="CustHomePhone"
                 value={primaryTraveler.CustHomePhone}
-                onChange={handlePrimaryTravelerChange}
+                // onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setHomePhone(e.target.value);
+                  validate("CustHomePhone", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustHomePhone", primaryTraveler.CustHomePhone)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required
               />
+              {errors?.CustHomePhone && (
+                <span className="error">{errors.CustHomePhone}</span>
+              )}
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -416,9 +543,20 @@ export default function BookingPage() {
                 type="text"
                 name="CustAddress"
                 value={primaryTraveler.CustAddress}
-                onChange={handlePrimaryTravelerChange}
+                //   onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setAddress(e.target.value);
+                  validate("CustAddress", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustAddress", primaryTraveler.CustAddress)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
+              {errors?.CustAddress && (
+                <span className="error">{errors.CustAddress}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -428,9 +566,18 @@ export default function BookingPage() {
                 type="text"
                 name="CustCity"
                 value={primaryTraveler.CustCity}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setCity(e.target.value);
+                  validate("CustCity", e.target.value);
+                }}
+                onBlur={() => validate("CustCity", primaryTraveler.CustCity)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
+              {errors?.CustCity && (
+                <span className="error">{errors.CustCity}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -440,7 +587,13 @@ export default function BookingPage() {
                 type="text"
                 name="CustProv"
                 value={primaryTraveler.CustProv}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setProv(e.target.value);
+                  validate("CustProv", e.target.value);
+                }}
+                onBlur={() => validate("CustProv", primaryTraveler.CustProv)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 style={{ height: "46px" }}
               >
@@ -452,6 +605,9 @@ export default function BookingPage() {
                 <option value="MB">Manitoba</option>
                 {/* Add others as needed */}
               </select>
+              {errors?.CustProv && (
+                <span className="error">{errors.CustProv}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -461,9 +617,20 @@ export default function BookingPage() {
                 type="text"
                 name="CustPostal"
                 value={primaryTraveler.CustPostal}
-                onChange={handlePrimaryTravelerChange}
+                //  onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setPostal(e.target.value);
+                  validate("CustPostal", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustPostal", primaryTraveler.CustPostal)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
+              {errors?.CustPostal && (
+                <span className="error">{errors.CustPostal}</span>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -473,16 +640,29 @@ export default function BookingPage() {
                 type="text"
                 name="CustCountry"
                 value={primaryTraveler.CustCountry}
-                onChange={handlePrimaryTravelerChange}
+                // onChange={handlePrimaryTravelerChange}
+                onChange={(e) => {
+                  handlePrimaryTravelerChange(e);
+                  setCountry(e.target.value);
+                  validate("CustCountry", e.target.value);
+                }}
+                onBlur={() =>
+                  validate("CustCountry", primaryTraveler.CustCountry)
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
+              {errors?.CustCountry && (
+                <span className="error">{errors.CustCountry}</span>
+              )}
             </div>
           </div>
         </div>
 
         {/* 附加旅行者 */}
         <div className="rounded-lg bg-gray-50 p-6">
-          <h2 className="mb-4 text-xl font-semibold">Additional Travelers</h2>
+          <h2 className="mb-4 text-xl font-semibold">
+            Future Feature...Additional Travelers
+          </h2>
           <p className="mb-4 text-gray-600">
             Add additional travelers sharing this booking. Each traveler will be
             charged the full package price.
@@ -620,7 +800,7 @@ export default function BookingPage() {
           </Link>
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isFormValid()}
             className="disabled:opacity-50 rounded bg-indigo-600 px-8 py-2 text-white hover:bg-indigo-700"
           >
             {isSubmitting ? "Processing..." : "Confirm Booking"}

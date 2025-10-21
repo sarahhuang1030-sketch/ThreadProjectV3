@@ -4,7 +4,6 @@ import { useState } from "react";
 // import "./nikitha.css";
 //import Link from "next/link";
 import Image from "next/image";
-//import Script from "./sarah.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
@@ -154,6 +153,7 @@ export function TabSection({
                 applyTravelerSelection();
                 setShowTravelerPopup(false);
               }}
+              className="btn btn-primary"
             >
               Apply
             </button>
@@ -222,10 +222,8 @@ export default function RootLayout() {
                 height={500}
               />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>First slide label</h5>
-                <p>
-                  Some representative placeholder content for the first slide.
-                </p>
+                <h5>London Big Ben</h5>
+                <p>Capital of the United Kingdom</p>
               </div>
             </div>
             <div className="carousel-item">
@@ -237,9 +235,10 @@ export default function RootLayout() {
                 height={500}
               />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>Second slide label</h5>
+                <h5>The Bahamas</h5>
                 <p>
-                  Some representative placeholder content for the second slide.
+                  A stunning archipelago of over 700 islands known for its
+                  turquoise waters, white-sand beaches, and vibrant culture
                 </p>
               </div>
             </div>
@@ -252,10 +251,8 @@ export default function RootLayout() {
                 height={500}
               />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>Third slide label</h5>
-                <p>
-                  Some representative placeholder content for the third slide.
-                </p>
+                <h5>Luxury Travel</h5>
+                <p>Find the best vacation to suit your needs</p>
               </div>
             </div>
             <button
@@ -370,11 +367,9 @@ export default function RootLayout() {
           </div>
 
           <div className="col-lg-3 p-3" style={{ width: "300px" }}>
-            <div className="tagline">Comfort Suites Paradise Island</div>
+            <div className="tagline">Paradise Island</div>
             <h4 className={`${abrilFatface.className} text-secondary`}>
-              4th Night Free With Min. 3 Paid Nights. Kids Stay, Play & Eat
-              Free! Includes access to Atlantis Paradise Island Plus up to $100
-              Resort Credit
+              4th Night Free With Min. 3 Paid Nights.
             </h4>
             <p className="text-muted fst-italic">Expires: December 21, 2025</p>
             <a

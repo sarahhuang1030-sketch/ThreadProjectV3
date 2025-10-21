@@ -53,8 +53,8 @@ export async function POST(req) {
     // 3. Optional: Insert additional travelers
     for (const traveler of additionalTravelers) {
       await db.query(
-        `INSERT INTO additional_travelers 
-          (CustFirstName, CustLastName, CustEmail, CustHomePhone, BookingId) 
+        `INSERT INTO customers
+          (CustFirstName, CustLastName, CustEmail, CustHomePhone) 
          VALUES (?, ?, ?, ?, LAST_INSERT_ID())`,
         [
           traveler.CustFirstName,
