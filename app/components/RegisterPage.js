@@ -46,7 +46,7 @@ export default function RegisterPage({ customers }) {
     CustLastName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
     CustHomePhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
     CustBusPhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
-    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
     CustAddress: /^[0-9]+\s+[A-Za-z\s]+$/,
     //\d{4}          # Exactly 4 digits
     //[\s\-]?        # Optional space or hyphen
@@ -92,36 +92,6 @@ export default function RegisterPage({ customers }) {
     }
   };
 
-  //   useEffect(() => {
-  //     async function WeatherFetching() {
-  //       try {
-  //         setLoading(true);
-  //         setWeatherError(null);
-  //         const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
-  //         const res = await fetch(url);
-  //         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  //         const json = await res.json();
-  //         setData(json);
-  //       } catch (e) {
-  //         if (e.name === "AbortError") return;
-  //         setWeatherError(e.message);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-
-  //     if (city) {
-  //       WeatherFetching();
-  //     }
-  //   }, [city]);
-
-  // Optional: Debug output
-  // useEffect(() => {
-  //   console.log("Weather data:", data);
-  //   console.log("Loading:", loading);
-  //   console.log("Error:", weatherError);
-  // }, [data, loading, weatherError]);
-
   return (
     <>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -153,10 +123,12 @@ export default function RegisterPage({ customers }) {
                 onBlur={() => validate("CustFirstName", CustFirstName)}
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-100 px-3 py-2 border border-secondary rounded"
               />
               {errors.CustFirstName && (
-                <span className="error">{errors.CustFirstName}</span>
+                <span className="error text-red-600">
+                  {errors.CustFirstName}
+                </span>
               )}
             </div>
             <div>
@@ -175,7 +147,9 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustLastName && (
-                <span className="error">{errors.CustLastName}</span>
+                <span className="error text-red-600">
+                  {errors.CustLastName}
+                </span>
               )}
             </div>
             <div>
@@ -194,7 +168,9 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustHomePhone && (
-                <span className="error">{errors.CustHomePhone}</span>
+                <span className="error text-red-600">
+                  {errors.CustHomePhone}
+                </span>
               )}
             </div>
             <div>
@@ -213,7 +189,9 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustBusPhone && (
-                <span className="error">{errors.CustBusPhone}</span>
+                <span className="error text-red-600">
+                  {errors.CustBusPhone}
+                </span>
               )}
             </div>
             <div>
@@ -232,7 +210,7 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustEmail && (
-                <span className="error">{errors.CustEmail}</span>
+                <span className="error text-red-600">{errors.CustEmail}</span>
               )}
             </div>
             <div>
@@ -251,7 +229,7 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />{" "}
               {errors.CustAddress && (
-                <span className="error">{errors.CustAddress}</span>
+                <span className="error text-red-600">{errors.CustAddress}</span>
               )}
             </div>
 
@@ -272,7 +250,7 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />{" "}
               {errors.CustCity && (
-                <span className="error">{errors.CustCity}</span>
+                <span className="error text-red-600">{errors.CustCity}</span>
               )}
             </div>
             <div>
@@ -306,7 +284,7 @@ export default function RegisterPage({ customers }) {
                 <option value="YT">YT - Yukon</option>
               </select>
               {errors.CustProv && (
-                <span className="error">{errors.CustProv}</span>
+                <span className="error text-red-600">{errors.CustProv}</span>
               )}
             </div>
             <div>
@@ -325,7 +303,7 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustCountry && (
-                <span className="error">{errors.CustCountry}</span>
+                <span className="error text-red-600">{errors.CustCountry}</span>
               )}
             </div>
             <div>
@@ -344,7 +322,7 @@ export default function RegisterPage({ customers }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.CustPostal && (
-                <span className="error">{errors.CustPostal}</span>
+                <span className="error text-red-600">{errors.CustPostal}</span>
               )}
             </div>
           </div>

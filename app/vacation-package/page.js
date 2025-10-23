@@ -1,7 +1,13 @@
 import { getAllpackageDetails, getExpiredPackages } from "@/app/lib/package";
 import PackageList from "../components/PackageList";
 import { HeadingPic } from "../components/Heading";
-import Link from "next/link";
+import { Abril_Fatface } from "next/font/google";
+
+const abrilFatface = Abril_Fatface({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-abril-fatface", // Optional: for CSS variable usage
+});
 
 export default async function HomePage() {
   const [activePackages, expiredPackages] = await Promise.all([
@@ -13,39 +19,19 @@ export default async function HomePage() {
     <>
       <HeadingPic bgClass="bgimg1" heading="Vacation Package" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white heading">
-          <h4>Hot Deal On NOW!</h4>
+      <div className="container py-4">
+        <div className="bg-white p-4">
+          <h4 className="mb-3 title">Hot Deal On NOW!</h4>
           <PackageList packages={activePackages} />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white heading">
-          <h4>Explore our past packages</h4>
+      <div className="container py-4">
+        <div className="bg-white p-4">
+          <h4 className="mb-3 title">Explore our past packages</h4>
           <PackageList packages={expiredPackages} />
         </div>
       </div>
-
-      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white heading">
-          <h4>See More Details</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 w-full sm:w-auto">
-            <Link
-              href="/booking"
-              className="bg-blue-600 text-white font-bold py-2 px-4 rounded no-underline text-center"
-            >
-              View Past Booking Details
-            </Link>
-            <Link
-              href="/bookings"
-              className="bg-blue-600 text-white font-bold py-2 px-4 rounded no-underline text-center"
-            >
-              View Bookings
-            </Link>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

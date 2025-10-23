@@ -32,7 +32,7 @@ export default function LoginForm() {
     //allows letters (uppercase and lowercase), accents, and hyphens, and requires at least two characters.
     CustFirstName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
     CustLastName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
-    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
   };
 
   const validate = (field, value) => {
@@ -115,70 +115,82 @@ export default function LoginForm() {
         >
           Login
         </h2>
+
+        {/* First Name */}
         <input
           type="text"
           name="CustFirstName"
           placeholder="First Name"
           value={formData.CustFirstName}
-          //onChange={handleChange}
           onChange={(e) => {
             const value = e.target.value;
-            // setFormData((prev) => ({ ...prev, CustFirstName: value }));
             handleChange(e);
-            setFirstname(value); // if you're tracking this separately
+            setFirstname(value);
             validate("CustFirstName", value);
           }}
           onBlur={() => validate("CustFirstName", CustFirstName)}
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
-        />{" "}
+        />
         {errors?.CustFirstName && (
-          <span className="error">{errors.CustFirstName}</span>
+          <span className="text-sm text-red-600 block mb-2">
+            {errors.CustFirstName}
+          </span>
         )}
+
+        {/* Last Name */}
         <input
           type="text"
           name="CustLastName"
           placeholder="Last Name"
           value={formData.CustLastName}
-          //onChange={handleChange}
           onChange={(e) => {
             const value = e.target.value;
-            // setFormData((prev) => ({ ...prev, CustFirstName: value }));
             handleChange(e);
-            setLastname(value); // if you're tracking this separately
+            setLastname(value);
             validate("CustLastName", value);
           }}
           onBlur={() => validate("CustLastName", CustLastName)}
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         {errors?.CustLastName && (
-          <span className="error">{errors.CustLastName}</span>
+          <span className="text-sm text-red-600 block mb-2">
+            {errors.CustLastName}
+          </span>
         )}
+
+        {/* Email */}
         <input
           type="email"
           name="CustEmail"
           placeholder="Email"
           value={formData.CustEmail}
-          // onChange={handleChange}
           onChange={(e) => {
             const value = e.target.value;
-            // setFormData((prev) => ({ ...prev, CustFirstName: value }));
             handleChange(e);
-            setEmail(value); // if you're tracking this separately
+            setEmail(value);
             validate("CustEmail", value);
           }}
           onBlur={() => validate("CustEmail", CustEmail)}
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
-        {errors?.CustEmail && <span className="error">{errors.CustEmail}</span>}
+        {errors?.CustEmail && (
+          <span className="text-sm text-red-600 block mb-2">
+            {errors.CustEmail}
+          </span>
+        )}
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
         >
           Login
         </button>
+
+        {/* Message Feedback */}
         {message && (
           <p
             className={`mt-3 text-center text-lg font-semibold ${
@@ -188,8 +200,16 @@ export default function LoginForm() {
             {message}
           </p>
         )}
-        <div>
-          New User? Please Register <Link href="/customer">Here</Link>
+
+        {/* Registration Link */}
+        <div className="mt-4 text-sm text-center">
+          New User? Please Register{" "}
+          <Link
+            href="/customer"
+            className="text-blue-600 underline hover:text-blue-800"
+          >
+            Here
+          </Link>
         </div>
       </form>
     </>

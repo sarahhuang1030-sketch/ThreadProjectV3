@@ -103,22 +103,23 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow mb-8"
+        className="p-6 rounded-lg shadow mb-8 max-w-3xl mx-auto bg-[#f3f2f2] "
       >
         <h2
-          className={`text-xl font-semibold mb-4 text-secondary ${abrilFatface.className}`}
+          className={`text-xl font-semibold mb-5 text-secondary ${abrilFatface.className}`}
         >
           Contact Form
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Name */}
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-xl font-medium text-gray-700 mb-2"
             >
               Name
             </label>
@@ -126,7 +127,7 @@ export default function ContactForm() {
               type="text"
               id="name"
               name="name"
-              className="form-control"
+              className="bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -134,14 +135,17 @@ export default function ContactForm() {
               }}
             />
             {errors.name && (
-              <span className="text-danger text-sm">{errors.name}</span>
+              <span className="text-sm text-red-600 block mt-1">
+                {errors.name}
+              </span>
             )}
           </div>
 
+          {/* Phone */}
           <div>
             <label
               htmlFor="phone"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-xl font-medium text-gray-700 mb-2"
             >
               Phone
             </label>
@@ -149,7 +153,7 @@ export default function ContactForm() {
               type="text"
               id="phone"
               name="phone"
-              className="form-control"
+              className="bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value);
@@ -157,14 +161,17 @@ export default function ContactForm() {
               }}
             />
             {errors.phone && (
-              <span className="text-danger text-sm">{errors.phone}</span>
+              <span className="text-sm text-red-600 block mt-1">
+                {errors.phone}
+              </span>
             )}
           </div>
 
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-xl font-medium text-gray-700 mb-2"
             >
               Email
             </label>
@@ -172,7 +179,7 @@ export default function ContactForm() {
               type="email"
               id="email"
               name="email"
-              className="form-control w-100"
+              className=" bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -180,24 +187,27 @@ export default function ContactForm() {
               }}
             />
             {errors.email && (
-              <span className="text-danger text-sm">{errors.email}</span>
+              <span className="text-sm text-red-600 block mt-1">
+                {errors.email}
+              </span>
             )}
           </div>
 
+          {/* Message */}
           <div className="md:col-span-2">
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-xl font-medium text-gray-700 mb-2"
             >
               Write Message
             </label>
             <textarea
               name="message"
               id="message"
-              className="form-control"
               cols="30"
               rows="6"
               aria-label="Write your message"
+              className="bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);
@@ -205,43 +215,31 @@ export default function ContactForm() {
               }}
             />
             {errors.message && (
-              <span className="text-danger text-sm">{errors.message}</span>
+              <span className="text-sm text-red-600 block mt-1">
+                {errors.message}
+              </span>
             )}
           </div>
         </div>
 
+        {/* Submit Button */}
         <div className="pt-4">
           <button
             type="submit"
-            className="btn btn-primary"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </div>
 
+        {/* Status Message */}
         {statusMessage && (
           <div className="pt-3">
-            <p>{statusMessage}</p>
+            <p className="text-center text-sm text-gray-700">{statusMessage}</p>
           </div>
         )}
       </form>
-
-      {/* <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2 text-secondary">
-          Contact Info
-        </h3>
-        <p>
-          <span className="font-bold">Address:</span> 98 West 21th Street, Suite
-          721 Calgary AB T3K 0D4
-        </p>
-        <p>
-          <span className="font-bold">Phone:</span> +1 (800) 555-TRVL
-        </p>
-        <p>
-          <span className="font-bold">Email:</span> info@worldtravel.com
-        </p>
-      </div> */}
     </section>
   );
 }

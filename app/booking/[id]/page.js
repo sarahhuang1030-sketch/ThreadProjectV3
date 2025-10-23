@@ -127,7 +127,7 @@ export default function BookingPage() {
     CustLastName: /^[a-zA-Z\u00C0-\u00FF'-]{2,}$/,
     CustHomePhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
     // CustBusPhone: /^(\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}$/,
-    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    CustEmail: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
     CustAddress: /^[0-9]+\s+[A-Za-z\s]+$/,
     //\d{4}          # Exactly 4 digits
     //[\s\-]?        # Optional space or hyphen
@@ -397,44 +397,6 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* 旅行日期 */}
-        {/* <div className="rounded-lg bg-gray-50 p-6">
-          <h2 className="mb-4 text-xl font-semibold">Travel Dates</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Start Date *
-              </label>
-              <input
-                type="date"
-                name="TripStart"
-                value={bookingInfo.TripStart}
-                onChange={handleBookingInfoChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                required
-                min={new Date().toISOString().split("T")[0]}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                End Date *
-              </label>
-              <input
-                type="date"
-                name="TripEnd"
-                value={bookingInfo.TripEnd}
-                onChange={handleBookingInfoChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                required
-                min={
-                  bookingInfo.TripStart ||
-                  new Date().toISOString().split("T")[0]
-                }
-              />
-            </div>
-          </div>
-        </div> */}
-
         {/* 主旅行者信息 */}
         <div className="rounded-lg bg-gray-50 p-6">
           <h2 className="mb-4 text-xl font-semibold">Primary Traveler *</h2>
@@ -461,7 +423,9 @@ export default function BookingPage() {
                 required
               />
               {errors?.CustFirstName && (
-                <span className="error">{errors.CustFirstName}</span>
+                <span className="error text-red-600">
+                  {errors.CustFirstName}
+                </span>
               )}
             </div>
 
@@ -486,7 +450,9 @@ export default function BookingPage() {
                 required
               />
               {errors?.CustLastName && (
-                <span className="error">{errors.CustLastName}</span>
+                <span className="error text-red-600">
+                  {errors.CustLastName}
+                </span>
               )}
             </div>
             <div>
@@ -508,7 +474,7 @@ export default function BookingPage() {
                 required
               />
               {errors?.CustEmail && (
-                <span className="error">{errors.CustEmail}</span>
+                <span className="error text-red-600">{errors.CustEmail}</span>
               )}
             </div>
             <div>
@@ -532,7 +498,9 @@ export default function BookingPage() {
                 required
               />
               {errors?.CustHomePhone && (
-                <span className="error">{errors.CustHomePhone}</span>
+                <span className="error text-red-600">
+                  {errors.CustHomePhone}
+                </span>
               )}
             </div>
             <div className="md:col-span-2">
@@ -555,7 +523,7 @@ export default function BookingPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
               {errors?.CustAddress && (
-                <span className="error">{errors.CustAddress}</span>
+                <span className="error text-red-600">{errors.CustAddress}</span>
               )}
             </div>
             <div>
@@ -576,7 +544,7 @@ export default function BookingPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
               {errors?.CustCity && (
-                <span className="error">{errors.CustCity}</span>
+                <span className="error text-red-600">{errors.CustCity}</span>
               )}
             </div>
             <div>
@@ -606,7 +574,7 @@ export default function BookingPage() {
                 {/* Add others as needed */}
               </select>
               {errors?.CustProv && (
-                <span className="error">{errors.CustProv}</span>
+                <span className="error text-red-600">{errors.CustProv}</span>
               )}
             </div>
             <div>
@@ -629,7 +597,7 @@ export default function BookingPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
               {errors?.CustPostal && (
-                <span className="error">{errors.CustPostal}</span>
+                <span className="error text-red-600">{errors.CustPostal}</span>
               )}
             </div>
             <div>
@@ -652,7 +620,7 @@ export default function BookingPage() {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
               {errors?.CustCountry && (
-                <span className="error">{errors.CustCountry}</span>
+                <span className="error text-red-600">{errors.CustCountry}</span>
               )}
             </div>
           </div>

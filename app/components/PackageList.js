@@ -1,8 +1,9 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const getImages = () => [
   { picture: "/pkg/1.webp" },
@@ -21,11 +22,13 @@ const getExpiredImages = () => [
 ];
 
 export default function PackageList({ packages = [] }) {
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
+    setIsClient(true);
   }, []);
 
-  // 添加数组类型检查
   if (!Array.isArray(packages)) {
     console.error("Invalid packages data:", packages);
     return <div className="alert alert-warning">无效的套餐数据</div>;
@@ -65,13 +68,13 @@ export default function PackageList({ packages = [] }) {
                     <h4>{pkg.PkgDesc}</h4>
 
                     <div className="mt-4">
-                      {startDate && (
+                      {isClient && startDate && (
                         <p className="text-sm text-gray-500">
                           <span className="font-medium">Start Date:</span>{" "}
                           {startDate.toLocaleDateString()}
                         </p>
                       )}
-                      {endDate && (
+                      {isClient && endDate && (
                         <p className="text-sm text-gray-500">
                           <span className="font-medium">End Date:</span>{" "}
                           {endDate.toLocaleDateString()}
