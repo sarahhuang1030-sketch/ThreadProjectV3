@@ -1,4 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is an ongoing [Next.js](https://nextjs.org) project using Tailwind, please come back to check on updates or new features soon.
+
+## Featued in this Project
+Using different languages to complete - JS, React, html, CSS, api
+Easily switch between Spanish and English
+Login/Logout Function
+After Login, customer's info will be prefilled for booking information
+- Home Page
+Using Javascript to toggle between the tabs
+Using Carousel to display the images
+- Package Page
+Showing Package information from Azure database
+- Contact Us
+Contact form allow user to send to the database
+Using api to display the map with Agency Offices and popup information
+Display agents information
+
+## Future improvement
+- Reorganize the header
+- Instead of ES/EN - use flags
+- Home page
+Search within the package
+List all the cities/province for dropdown menu
+- Package Page
+Redo the booking page - as this was done by a teammate
+- Contact Us
+Add a close button for the popup information
+Add a link at the bottom of the popup information that leds to the correspondence list of agents in that agency
 
 ## Getting Started
 
@@ -29,8 +56,9 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+It's coming soon
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
