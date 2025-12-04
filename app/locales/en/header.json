@@ -1,0 +1,11 @@
+{
+    "_comment": "the name has to be in lowercases",
+    "vacation_package": "Vacation Package",
+    "about_us": "About Us",
+    "contact": "Contact",
+    "login": "Login",
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "world_travel": "World Travel",
+    "loading":"Loading"
+}

@@ -1,0 +1,11 @@
+{
+    "_comment": "the name has to be in lowercases",
+    "vacation_package": "Paquete de vacaciones",
+    "about_us": "Acerca de Nosotros",
+    "contact": "Contacto",
+    "login": "Iniciar Sesión",
+    "welcome": "Bienvenido",
+    "logout": "Cerrar Sesión",
+    "world_travel": "Viajes Mundiales",
+    "loading":"Cargando"
+}

@@ -8,6 +8,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import { HeadingPic } from "./components/Heading";
+import { useLanguage, LanguageProvider } from "./context/languagecontext";
+
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -23,7 +25,9 @@ export function TabSection({
   setAdultCount,
   childCount,
   setChildCount,
-}) {
+}) 
+  {
+  const {t} = useLanguage();
   //  setActiveTab tracks which tab is active, and this one sets ticket as default
   const [activeTab, setActiveTab] = useState("tickets");
   //- showTravelerPopup: toggles the traveler selection popup, and default to not popup
@@ -53,13 +57,12 @@ export function TabSection({
             className={`tab ${activeTab === "tickets" ? "active" : ""}`}
             onClick={() => setActiveTab("tickets")}
           >
-            Tickets
+           {t(`homepage.tickets`)}
           </button>
           <button
             className={`tab ${activeTab === "todo" ? "active" : ""}`}
-            onClick={() => setActiveTab("todo")}
-          >
-            Things to do
+            onClick={() => setActiveTab("todo")} >
+            {t(`homepage.things_to_do`)}
           </button>
         </div>
         {/* Tab Content */}
@@ -78,7 +81,7 @@ export function TabSection({
                   type="text"
                   id="destination"
                   name="destination"
-                  placeholder="Where to?"
+                  placeholder={t(`homepage.where_to?`)}
                   className="image-label1"
                 />
               </div>
@@ -86,7 +89,7 @@ export function TabSection({
                 <input
                   type={inputType}
                   id="travelDate"
-                  placeholder="Date"
+                  placeholder={t(`homepage.date`)}
                   onFocus={() => setInputType("date")}
                   onBlur={(e) => {
                     if (e.target.value === "") setInputType("text");
@@ -100,14 +103,14 @@ export function TabSection({
                   id="travelerInput"
                   readOnly
                   value={travelerSummary}
-                  placeholder="Traveller"
+                  placeholder={t(`homepage.traveler`)}
                   className="image-label3"
                   onClick={() => setShowTravelerPopup(true)}
                 />
               </div>
               <div>
                 <button type="submit" className="btn-ticket">
-                  Search
+                   {t(`homepage.search`)}
                 </button>
               </div>
             </form>
@@ -115,7 +118,7 @@ export function TabSection({
         )}
         {activeTab === "todo" && (
           <div id="todo" className="tab-content">
-            <p>Stay tuned for upcoming feature...</p>
+          {t(`stay_tuned_for_upcoming_feature`)}  
           </div>
         )}
         {/* Traveler Popup styling */}
@@ -123,8 +126,8 @@ export function TabSection({
          */}
         {showTravelerPopup && (
           <div id="travelerPopup" className="popup-panel">
-            <h2>Select Travelers</h2>
-            <label htmlFor="adultCount">Adults:</label>
+            <h2>{t(`select_traveler`)}</h2>
+            <label htmlFor="adultCount">{t(`homepage.adult`)}:</label>
             <br />
             <input
               type="number"
@@ -135,7 +138,7 @@ export function TabSection({
             />
             <br />
             <br />
-            <label htmlFor="childCount">Children:</label>
+            <label htmlFor="childCount">{t(`homepage.children`)}:</label>
             <br />
             <input
               type="number"
@@ -155,7 +158,7 @@ export function TabSection({
               }}
               className="btn btn-primary"
             >
-              Apply
+              {t(`hompegae.apply`)}
             </button>
           </div>
         )}
@@ -168,7 +171,7 @@ export default function RootLayout() {
   const [inputType, setInputType] = useState("text");
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
-
+  const {t} = useLanguage();
   return (
     <>
       {/* page wide picture */}
@@ -187,72 +190,53 @@ export default function RootLayout() {
       {/* Featured Section */}
       <div className="container">
         <h1 className={`featured ${abrilFatface.className}`}>
-          Featured Destinations
+          {t(`homepage.featured_destinations`)}
         </h1>
         <div id="carouselExampleCaptions" className="carousel slide">
-          {/* <div class="carousel-indicators">
-          <button
-            type="button"
-            data-bs-target="#carouselExampleCaptions"
-            data-bs-slide-to="0"
-            class="active"
-            aria-current="true"
-            aria-label="Slide 1"
-          ></button>
-          <button
-            type="button"
-            data-bs-target="#carouselExampleCaptions"
-            data-bs-slide-to="1"
-            aria-label="Slide 2"
-          ></button>
-          <button
-            type="button"
-            data-bs-target="#carouselExampleCaptions"
-            data-bs-slide-to="2"
-            aria-label="Slide 3"
-          ></button>
-        </div> */}
+         
           <div className="carousel-inner">
             <div className="carousel-item active">
               <Image
                 src="/featured1.webp"
-                className="d-block w-100"
+                className="d-block  img-fluid"
                 alt="..."
-                width={1300}
+                width={1100}
                 height={500}
+                style={{  height: "auto", objectFit: "cover" }}
               />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>London Big Ben</h5>
-                <p>Capital of the United Kingdom</p>
+                <h5>{t(`homepage.london_big_ben`)}</h5>
+                <p>{t(`homepage.capital_of_the_united_kingdom`)}</p>
               </div>
             </div>
             <div className="carousel-item">
               <Image
-                src="/featured2.webp"
-                className="d-block w-100"
-                alt="..."
-                width={1300}
-                height={500}
-              />
+                  src="/featured2.webp"
+                  className="d-block img-fluid"
+                  alt="..."
+                  width={1100}
+                  height={500}
+                  style={{  height: "auto", objectFit: "cover" }}
+                />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>The Bahamas</h5>
+                <h5>{t(`homepage.the_bahamas`)}</h5>
                 <p>
-                  A stunning archipelago of over 700 islands known for its
-                  turquoise waters, white-sand beaches, and vibrant culture
+                 {t(`homepage.a_stunning_archipelago_of_over_700_islands_known_for_its_turquoise waters,_white-sand_beaches,_and_vibrant_culture`)}
                 </p>
               </div>
             </div>
             <div className="carousel-item">
               <Image
                 src="/featured3.jpg"
-                className="d-block w-100"
+                className="d-block  img-fluid"
                 alt="..."
-                width={1300}
+                width={1100}
                 height={500}
+                style={{  height: "auto", objectFit: "cover" }}
               />
               <div className="carousel-caption d-none d-md-block caption">
-                <h5>Luxury Travel</h5>
-                <p>Find the best vacation to suit your needs</p>
+                <h5>{t(`homepage.luxury_travel`)}</h5>
+                <p>{t(`homepage.find_the_best_vacation_to_suit_your_needs`)}</p>
               </div>
             </div>
             <button
@@ -289,7 +273,7 @@ export default function RootLayout() {
           className={`featured ${abrilFatface.className}`}
           style={{ marginTop: "50px" }}
         >
-          Deal Zone
+          {t(`homepage.deal_zone`)}
         </h1>
         <div className=" row g-4 justify-content-center mt-3">
           <div className="col-12 col-sm-6 col-md-3">
@@ -330,72 +314,72 @@ export default function RootLayout() {
           </div>
         </div>
         <div className="row1 g-4 justify-between-center mt-3">
-          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
-            <div className="tagline">SLS BAHA MAR</div>
+          <div className="col-lg-3 p-3" style={{ width: "270px" }}>
+            <div className="tagline">{t(`homepage.sls_baha_mar`)}</div>
             <h4 className={`${abrilFatface.className} text-secondary`}>
-              4th Night Free and up to $250 resort credit
+             {t(`homepage.4th_night_free_and_up_to_$250_resort_credit`)}
             </h4>
-            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <p className="text-muted fst-italic">{t(`homepage.expires`)}: {t(`homepage.december`)} 21, 2025</p>
             <a
               href="https://slshotels.com/offer/baha-mar-fourth-night-on-us/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <button type="button" className="btn btn-primary w-100">
-                More Detail
+                {t(`homepage.more_detail`)}
               </button>
             </a>
           </div>
 
-          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
+          <div className="col-lg-3 p-3" style={{ width: "270px" }}>
             <div className="tagline">
-              Margaritaville Beach Resort, Nassau, Bahamas
+              {t(`homepage.margaritaville_beach_resort`)}
             </div>
             <h4 className={`${abrilFatface.className} text-secondary`}>
-              Save 25%
+              {t(`homepage.save`)} 25%
             </h4>
-            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <p className="text-muted fst-italic">{t(`homepage.expires`)}: {t(`homepage.december`)} 21, 2025</p>
             <a
               href="https://www.margaritavilleresorts.com/margaritaville-beach-resort-nassau/offers"
               target="_blank"
               rel="noopener noreferrer"
             >
               <button type="button" className="btn btn-primary w-100">
-                More Detail
+                {t(`homepage.more_detail`)}
               </button>
             </a>
           </div>
 
-          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
-            <div className="tagline">Paradise Island</div>
+          <div className="col-lg-3 p-3" style={{ width: "270px" }}>
+            <div className="tagline">{t(`homepage.paradise_island`)}</div>
             <h4 className={`${abrilFatface.className} text-secondary`}>
-              4th Night Free With Min. 3 Paid Nights.
+              {t(`homepage.4th_night_free_with_min._3_paid_nights`)}
             </h4>
-            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <p className="text-muted fst-italic">{t(`homepage.expires`)}: {t(`homepage.december`)} 21, 2025</p>
             <a
               href="https://www.comfortsuitespi.com/specials"
               target="_blank"
               rel="noopener noreferrer"
             >
               <button type="button" className="btn btn-primary w-100">
-                More Detail
+                {t(`homepage.more_detail`)}
               </button>
             </a>
           </div>
 
-          <div className="col-lg-3 p-3" style={{ width: "300px" }}>
-            <div className="tagline">British Colonial Nassau</div>
+          <div className="col-lg-3 p-3" style={{ width: "270px" }}>
+            <div className="tagline">{t(`homepage.british_colonial_nassau`)}</div>
             <h4 className={`${abrilFatface.className} text-secondary`}>
-              Save 15% + $300 Resort Credit
+              {t(`homepage.save`)} 15% + $300 {t(`homepage.resort_credit`)}
             </h4>
-            <p className="text-muted fst-italic">Expires: December 21, 2025</p>
+            <p className="text-muted fst-italic">{t(`homepage.expires`)}: {t(`homepage.december`)} 21, 2025</p>
             <a
               href="https://www.britishcolonial.com/special-offers.htm"
               target="_blank"
               rel="noopener noreferrer"
             >
               <button type="button" className="btn btn-primary w-100">
-                More Detail
+                {t(`homepage.more_detail`)}
               </button>
             </a>
           </div>

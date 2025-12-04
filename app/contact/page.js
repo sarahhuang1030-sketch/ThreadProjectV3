@@ -11,7 +11,9 @@ import AgentsList from "../components/AgentsList";
 import { UserCommentAction } from "../lib/action";
 import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
-import Iframe from "./Iframe";
+import Iframe from "./ContactMap";
+import ContactMap from "./ContactMap";
+
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
   subsets: ["latin"],
@@ -53,7 +55,10 @@ export default async function HomePage() {
           >
             Branches
           </h2>
-          <AgencyList agencies={agencies} />
+          {/* <AgencyList agencies={agencies} /> */}
+          {/* <div className="container"> */}
+          <ContactMap />
+          {/* </div> */}
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -76,9 +81,9 @@ export default async function HomePage() {
           <AgentsList agents={agents2} />
         </div>
       </div>
-      <div className="container">
+      {/* <div className="container">
         <Iframe />
-      </div>
+      </div> */}
     </>
   );
 }

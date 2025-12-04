@@ -119,7 +119,7 @@ export default function ContactForm() {
           <div>
             <label
               htmlFor="name"
-              className="block text-xl font-medium text-gray-700 mb-2"
+              className="block text-xl font-small text-gray-700 mb-2"
             >
               Name
             </label>
@@ -145,7 +145,7 @@ export default function ContactForm() {
           <div>
             <label
               htmlFor="phone"
-              className="block text-xl font-medium text-gray-700 mb-2"
+              className="block text-xl font-small text-gray-700 mb-2"
             >
               Phone
             </label>
@@ -153,7 +153,7 @@ export default function ContactForm() {
               type="text"
               id="phone"
               name="phone"
-              className="bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white w-full p-2 border-1 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={phone}
               onChange={(e) => {
                 setPhone(e.target.value);
@@ -171,7 +171,7 @@ export default function ContactForm() {
           <div>
             <label
               htmlFor="email"
-              className="block text-xl font-medium text-gray-700 mb-2"
+              className="block text-xl font-small text-gray-700 mb-2"
             >
               Email
             </label>
@@ -179,7 +179,7 @@ export default function ContactForm() {
               type="email"
               id="email"
               name="email"
-              className=" bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className=" bg-white w-full p-2 border-1 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -197,7 +197,7 @@ export default function ContactForm() {
           <div className="md:col-span-2">
             <label
               htmlFor="message"
-              className="block text-xl font-medium text-gray-700 mb-2"
+              className="block text-xl font-small text-gray-700 mb-2"
             >
               Write Message
             </label>
@@ -207,7 +207,7 @@ export default function ContactForm() {
               cols="30"
               rows="6"
               aria-label="Write your message"
-              className="bg-white w-full p-2 border-3 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-white w-full p-2 border-1 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={message}
               onChange={(e) => {
                 setMessage(e.target.value);

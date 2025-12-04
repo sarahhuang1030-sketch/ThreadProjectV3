@@ -1,0 +1,22 @@
+{
+    "booking":"Booking",
+    "package_details":"Package Details",
+    "package_name":"Package Name",
+    "price_per_person":"Price Per Person",
+    "january":"January",
+    "primary_traveler":"Primary Traveler",
+    "first_name":"First Name",
+    "last_name":"Last Name",
+    "address":"Address",
+    "city":"City",
+    "province/state":"Province/State",
+    "select_province":"Select Province",
+    "postal_code":"Postal Code",
+    "country":"Country",
+    "total_price":"Total Price",
+    "traveler(s)":"Traveler(s)",
+    "at":"at",
+    "each":"each",
+    "back_to_packages":"Back to Packages",
+    "confirm_booking":"Confirm Booking"
+}

@@ -85,8 +85,8 @@ export default function LoginForm() {
 
       if (result.success) {
         setMessage("Login successful! Redirecting...");
-        localStorage.setItem("CustFirstName", formData.CustFirstName);
-        setUser(formData.CustFirstName);
+        localStorage.setItem("CustomerId", result.user.CustomerId);
+        setUser(result.user);
         //  window.dispatchEvent(new Event("storage"));
 
         setTimeout(() => {

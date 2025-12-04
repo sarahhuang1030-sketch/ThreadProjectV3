@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
+import { useLanguage } from "../context/languagecontext";
 
 const getImages = () => [
   { picture: "/pkg/1.webp" },
@@ -21,7 +22,8 @@ const getExpiredImages = () => [
   { picture: "/pkg/10.avif" },
 ];
 
-export default function PackageList({ packages = [] }) {
+export default function PackageList({ packages = [],titleKey }) {
+   const {t} = useLanguage();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -31,10 +33,17 @@ export default function PackageList({ packages = [] }) {
 
   if (!Array.isArray(packages)) {
     console.error("Invalid packages data:", packages);
-    return <div className="alert alert-warning">无效的套餐数据</div>;
+    return <div className="alert alert-warning">Packages are not available at this time..</div>;
   }
 
   return (
+    <>
+     {titleKey && (
+      <h4 className="mb-3 title">
+       {t(`vacation.${titleKey}`)}
+      </h4>
+    )}
+    
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {packages.length > 0 ? (
         packages.map((pkg, index) => {
@@ -64,19 +73,39 @@ export default function PackageList({ packages = [] }) {
                   />
 
                   <div className="card-body">
-                    <p className="tagline">{pkg.PkgName}</p>
-                    <h4>{pkg.PkgDesc}</h4>
+                                {/* TRANSLATED TITLE */}
+                    {(() => {
+                      const nameKey = pkg.PkgName.toLowerCase().replace(/\s+/g, "_");
+                      return (
+                        <p className="tagline">
+                          {t(`vacation.${nameKey}`) }
+                        </p>
+                      );
+                    })()}
+
+                    {/* TRANSLATED DESCRIPTION */}
+                    {(() => {
+                      const descKey =  pkg.PkgDesc.toLowerCase().replace(/\s+/g, "_");
+                      return (
+                        <h4>
+                          {t(`vacation.${descKey}`)}
+                        </h4>
+                      );
+                    })()}
+
+                    {/* <p className="tagline">{t(`vacation.${nameKey}`) || pkg.PkgName}</p>
+                    <h4>{pkg.PkgDesc}</h4> */}
 
                     <div className="mt-4">
                       {isClient && startDate && (
                         <p className="text-sm text-gray-500">
-                          <span className="font-medium">Start Date:</span>{" "}
+                          <span className="font-medium">{t("vacation.start_date")}:</span>{" "}
                           {startDate.toLocaleDateString()}
                         </p>
                       )}
                       {isClient && endDate && (
                         <p className="text-sm text-gray-500">
-                          <span className="font-medium">End Date:</span>{" "}
+                          <span className="font-medium">{t("vacation.end_date")}:</span>{" "}
                           {endDate.toLocaleDateString()}
                         </p>
                       )}
@@ -85,12 +114,12 @@ export default function PackageList({ packages = [] }) {
                           ${pkg.PkgBasePrice.toLocaleString()}
                         </p>
                       )}
-                      {pkg.PkgAgencyCommission && (
+                      {/* {pkg.PkgAgencyCommission && (
                         <p className="text-sm text-blue-600">
                           Commission: $
                           {pkg.PkgAgencyCommission.toLocaleString()}
                         </p>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>
@@ -105,17 +134,17 @@ export default function PackageList({ packages = [] }) {
                       )}`}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
                     >
-                      Booking NOW
+                     {t("vacation.booking_now")}
                     </Link>
                   ) : (
                     <span className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded">
-                      Expired
+                      {t("vacation.expired")}
                     </span>
                   )}
 
                   {isExpired && (
                     <span className="text-red-500 text-sm font-medium">
-                      (Departure date has passed)
+                      ({t("vacation.departure_date_has_passed")})
                     </span>
                   )}
                 </div>
@@ -125,9 +154,11 @@ export default function PackageList({ packages = [] }) {
         })
       ) : (
         <div className="col-span-full text-center py-8 text-gray-500">
-          暂无可用套餐
+          There are no Package available to view at this time..
+          Please come back soon to check our packages..
         </div>
       )}
     </div>
+    </>
   );
 }

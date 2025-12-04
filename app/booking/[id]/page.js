@@ -3,8 +3,10 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useUser } from "@/app/context/usercontext";
 
 export default function BookingPage() {
+  const { user, loading } = useUser();
   const [CustFirstName, setFirstname] = useState("");
   const [CustLastName, setLastname] = useState("");
   const [CustAddress, setAddress] = useState("");
@@ -120,6 +122,23 @@ export default function BookingPage() {
 
     fetchPackageDetails();
   }, [packageId, price, pkgName]);
+
+  //getting information from our context
+  useEffect(() => {
+    if (user) {
+      setPrimaryTraveler({
+        CustFirstName: user.CustFirstName || "",
+        CustLastName: user.CustLastName || "",
+        CustEmail: user.CustEmail || "",
+        CustHomePhone: user.CustHomePhone || "",
+        CustAddress: user.CustAddress || "",
+        CustCity: user.CustCity || "",
+        CustProv: user.CustProv || "",
+        CustPostal: user.CustPostal || "",
+        CustCountry: user.CustCountry || "",
+      });
+    }
+  }, [user]);
 
   const patterns = {
     //allows letters (uppercase and lowercase), accents, and hyphens, and requires at least two characters.

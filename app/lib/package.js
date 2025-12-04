@@ -1,13 +1,18 @@
 // lib/package.js
-import db from "./database.js";
-
+import {getPool } from "./database.js";
 // 获取所有有效套餐（未过期）
 export async function getAllpackageDetails() {
   try {
-    const [packages] = await db.query(
-      "SELECT * FROM packages WHERE PkgEndDate >= CURRENT_DATE"
-    );
-    return packages || []; // 确保返回数组
+    const pool = await getPool();
+ const result = await pool
+      .request()
+      .query(`
+        SELECT *
+        FROM packages
+        WHERE PkgEndDate >= CAST(GETDATE() AS DATE)
+      `);
+
+    return result.recordset ?? []; // always return array
   } catch (error) {
     console.error("Error fetching packages:", error);
     return [];
@@ -17,10 +22,17 @@ export async function getAllpackageDetails() {
 // 获取所有过期套餐（移除 id 参数）
 export async function getExpiredPackages() {
   try {
-    const [packages] = await db.query(
-      "SELECT * FROM packages WHERE PkgStartDate <= CURRENT_DATE"
-    );
-    return packages || [];
+    const pool = await getPool();
+
+    const result = await pool
+      .request()
+      .query(`
+        SELECT *
+        FROM packages
+        WHERE PkgStartDate <= CAST(GETDATE() AS DATE)
+      `);
+
+    return result.recordset ?? [];
   } catch (error) {
     console.error("Error fetching expired packages:", error);
     return [];

@@ -1,10 +1,15 @@
-import db from "./database.js";
+import {getPool } from "./database.js";
 
 export async function getAgency() {
   try {
-    const [agencies] = await db.query("SELECT * FROM agencies");
-    //#8 array error
-    return agencies;
+    //for SQL
+    // const [agencies] = await db.query("SELECT * FROM agencies");
+     // return agencies;
+
+     //this is for Azure
+    const pool = await getPool();
+    const result = await pool.request().query("SELECT * FROM Agencies");
+    return result.recordset; // THIS is your rows array
   } catch (error) {
     console.error("Error fetching employee:", error);
     throw error;
@@ -13,10 +18,15 @@ export async function getAgency() {
 
 export async function getAgentsbyId1() {
   try {
-    const [agents] = await db.query("SELECT * FROM agents WHERE AgencyId =1");
+    //for SQL
+    // const [agents] = await db.query("SELECT * FROM agents WHERE AgencyId =1");
+     // return agents;
 
-    //#8 array error
-    return agents;
+     //This is for Azure
+    const pool = await getPool();
+    const result = await pool.request().query("SELECT * FROM agents WHERE AgencyId =1");
+
+    return result.recordset;
   } catch (error) {
     console.error("Error fetching agents:", error);
     throw error;
@@ -25,10 +35,12 @@ export async function getAgentsbyId1() {
 
 export async function getAgentsbyId2() {
   try {
-    const [agents] = await db.query("SELECT * FROM agents WHERE AgencyId =2");
+    // const [agents] = await db.query("SELECT * FROM agents WHERE AgencyId =2");
+    // return agents;
+    const pool = await getPool();
+    const result = await pool.request().query("SELECT * FROM agents WHERE AgencyId =2");
 
-    //#8 array error
-    return agents;
+    return result.recordset;
   } catch (error) {
     console.error("Error fetching agents:", error);
     throw error;
@@ -36,35 +48,48 @@ export async function getAgentsbyId2() {
 }
 //this is for the contact form
 export async function createUser({ name, phone, email, message }) {
+  
+  const pool = await getPool();
   //check if name and email are undefined
   //these are required fields
   if (!name?.trim() || !phone?.trim() || !email?.trim() || !message?.trim())
     throw new Error("Please enter the required field");
-
+    
   //check if the email is unique
-  const [existing] = await db.query(
-    "SELECT id FROM contact_messages where email = ?",
-    [email]
-  );
+  const existingResult = await pool.request().input("Email",email)
+  .query("SELECT id FROM contact_messages where email = @Email");
 
-  if (existing.length > 0)
+  if (existingResult.length > 0)
     throw new Error("Customer with this email already exist");
 
   //otherwise store new user
-  const result = await db.query(
-    "Insert into contact_messages (name, phone, email, message) values(?,?,?,?)",
-    [name, phone, email, message]
-  );
+    const insertResult = await pool
+    .request()
+    .input("Name", name)
+    .input("Phone", phone)
+    .input("Email", email)
+    .input("Message", message)
+    .query(`
+      INSERT INTO contact_messages (name, phone, email, message)
+      OUTPUT INSERTED.id
+      VALUES (@Name, @Phone, @Email, @Message)
+    `);
   //return id of the inserted object
-  console.log(result);
-  return { id: result.insertid };
+  // console.log(result);
+  // return { id: result.insertid };
+    return { id: insertResult.recordset[0].id };
 }
 
 export async function getCustomers() {
-  try {
-    const [customers] = await db.query("SELECT * FROM customers");
-    //#8 array error
-    return customers;
+  
+    try {
+    const pool = await getPool();
+
+    const result = await pool
+      .request()
+      .query("SELECT * FROM customers");
+
+    return result.recordset;   // this is your array of customers
   } catch (error) {
     console.error("Error fetching customers:", error);
     throw error;
@@ -83,43 +108,53 @@ export async function createCustomers({
   CustEmail,
   CustPostal,
 }) {
-  //check if name and email are undefined
-  //these are required fields
+  // Required validation
   if (
     !CustFirstName?.trim() ||
     !CustLastName?.trim() ||
     !CustEmail?.trim() ||
     !CustHomePhone?.trim()
-  )
+  ) {
     throw new Error("Please enter the required field");
+  }
 
-  //check if the email is unique
-  const [row] = await db.query(
-    "SELECT CustomerId FROM customers where CustEmail = ?",
-    [CustEmail]
-  );
+  const pool = await getPool();
 
-  if (row.length > 0) throw new Error("Customer with this email already exist");
-  // alert("Customer with this email already exist");
+  // CHECK IF EMAIL ALREADY EXISTS
+  const existing = await pool
+    .request()
+    .input("CustEmail", CustEmail)
+    .query("SELECT CustomerId FROM customers WHERE CustEmail = @CustEmail");
 
-  //otherwise store new user
-  const result = await db.query(
-    "INSERT INTO customers (CustFirstName, CustLastName, CustAddress, CustHomePhone, CustBusPhone, CustCity, CustProv, CustCountry, CustEmail, CustPostal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      CustFirstName,
-      CustLastName,
-      CustAddress,
-      CustHomePhone,
-      CustBusPhone,
-      CustCity,
-      CustProv,
-      CustCountry,
-      CustEmail,
-      CustPostal,
-    ]
-  );
+  if (existing.recordset.length > 0) {
+    throw new Error("Customer with this email already exists");
+  }
 
-  //return id of the inserted object
-  console.log(result);
-  return { id: result.insertId };
+  // INSERT NEW CUSTOMER & RETURN ID
+  const insertResult = await pool
+    .request()
+    .input("CustFirstName", CustFirstName)
+    .input("CustLastName", CustLastName)
+    .input("CustAddress", CustAddress)
+    .input("CustHomePhone", CustHomePhone)
+    .input("CustBusPhone", CustBusPhone)
+    .input("CustCity", CustCity)
+    .input("CustProv", CustProv)
+    .input("CustCountry", CustCountry)
+    .input("CustEmail", CustEmail)
+    .input("CustPostal", CustPostal)
+    .query(`
+      INSERT INTO customers (
+        CustFirstName, CustLastName, CustAddress, CustHomePhone, CustBusPhone,
+        CustCity, CustProv, CustCountry, CustEmail, CustPostal
+      )
+      OUTPUT INSERTED.CustomerId
+      VALUES (
+        @CustFirstName, @CustLastName, @CustAddress, @CustHomePhone, @CustBusPhone,
+        @CustCity, @CustProv, @CustCountry, @CustEmail, @CustPostal
+      )
+    `);
+
+  // Get the inserted ID
+  return { id: insertResult.recordset[0].CustomerId };
 }

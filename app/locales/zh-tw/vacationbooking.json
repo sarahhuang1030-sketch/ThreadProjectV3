@@ -1,0 +1,22 @@
+{
+    "booking":"预定",
+    "package_details":"Detalles Del Paquete",
+    "package_name":"Nombre Del Paquete",
+    "price_per_person":"Precio por Persona",
+    "january":"El Enero",
+    "primary_traveler":"Viajer Primario",
+    "first_name":"El Nombre de Pila",
+    "last_name":"El Apellido",
+    "address":"La Dirección",
+    "city":"La Ciudad",
+    "province/state":"La Provincia/El Estado",
+    "select_province":"Seleccionar una Provincia",
+    "postal_code":"Código Postal",
+    "country":"El País",
+    "total_price":"Costo Total",
+    "traveler(s)":"El Viajero",
+    "at":"en",
+    "each":"cada",
+    "back_to_packages":"Volver a Paquetes",
+    "confirm_booking":"Confirmar Reserva"
+}

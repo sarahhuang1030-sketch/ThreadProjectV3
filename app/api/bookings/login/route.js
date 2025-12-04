@@ -14,7 +14,14 @@ export async function POST(req) {
     );
 
     const success = Array.isArray(rows) && rows.length > 0;
-    return NextResponse.json({ success });
+    if (success) {
+      return NextResponse.json({ success: success, user: rows[0] });
+    } else {
+      return NextResponse.json({
+        success: false,
+        error: "Invalid credential, please check your credentials",
+      });
+    }
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ success: false, error: "Something went wrong" });
