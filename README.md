@@ -1,10 +1,11 @@
 This is an ongoing [Next.js](https://nextjs.org) project using Tailwind css, please come back to check on updates or new features soon.
 
 ## Featued in this Project
-- Using different languages to complete - JS, React, html, CSS, api
+- Using different computer languages to complete this project - JS, React, html, CSS, api
 - Easily switch between Spanish and English
 - Login/Logout Function
 - After Login, customer's info will be prefilled for booking information
+- Apply validation to all the fields
 - Home Page
 Using Javascript to toggle between the tabs
 Using Carousel to display the images
@@ -26,6 +27,7 @@ Redo the booking page - as this was done by a teammate
 - Contact Us
 Add a close button for the popup information
 Add a link at the bottom of the popup information that leds to the correspondence list of agents in that agency
+Finish translating the page
 
 ## Getting Started
 
