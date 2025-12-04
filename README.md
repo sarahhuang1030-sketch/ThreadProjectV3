@@ -2,9 +2,9 @@ This is an ongoing [Next.js](https://nextjs.org) project using Tailwind, please 
 
 ## Featued in this Project
 Using different languages to complete - JS, React, html, CSS, api
-Easily switch between Spanish and English
-Login/Logout Function
-After Login, customer's info will be prefilled for booking information
+- Easily switch between Spanish and English
+- Login/Logout Function
+- After Login, customer's info will be prefilled for booking information
 - Home Page
 Using Javascript to toggle between the tabs
 Using Carousel to display the images
