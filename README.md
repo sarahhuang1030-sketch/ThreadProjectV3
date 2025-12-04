@@ -1,7 +1,7 @@
-This is an ongoing [Next.js](https://nextjs.org) project using Tailwind, please come back to check on updates or new features soon.
+This is an ongoing [Next.js](https://nextjs.org) project using Tailwind css, please come back to check on updates or new features soon.
 
 ## Featued in this Project
-Using different languages to complete - JS, React, html, CSS, api
+- Using different languages to complete - JS, React, html, CSS, api
 - Easily switch between Spanish and English
 - Login/Logout Function
 - After Login, customer's info will be prefilled for booking information
