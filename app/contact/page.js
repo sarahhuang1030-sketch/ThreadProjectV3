@@ -1,17 +1,12 @@
-import AgencyList from "../components/AgencyList";
+
 import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
 import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
 import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
-// import ContactMap from "./ContactMap";
+import ContactMapClient from "./ContactMapClient ";
 
-import dynamic from "next/dynamic";
 
-const ContactMap = dynamic(
-  () => import("./ContactMap"),
-  { ssr: false }
-);
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
@@ -56,7 +51,7 @@ export default async function HomePage() {
           </h2>
           {/* <AgencyList agencies={agencies} /> */}
           {/* <div className="container"> */}
-          <ContactMap />
+          <ContactMapClient />
           {/* </div> */}
         </div>
       </div>
