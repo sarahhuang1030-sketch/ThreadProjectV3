@@ -1,5 +1,7 @@
 import {getPool } from "./database.js";
 
+
+
 export async function getAgency() {
   try {
     //for SQL
@@ -108,6 +110,7 @@ export async function createCustomers({
   CustEmail,
   CustPostal,
 }) {
+  
   // Required validation
   if (
     !CustFirstName?.trim() ||

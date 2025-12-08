@@ -1,9 +1,9 @@
-import db from "@/app/lib/database"; // your MySQL connection
+import {getPool} from "@/app/lib/database"; // your MySQL connection
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const data = await req.json();
-
+  const pool = await getPool();
   try {
     const {
       primaryTraveler,
@@ -14,7 +14,7 @@ export async function POST(req) {
     } = data;
 
     // 1. Insert primary traveler
-    const [customerResult] = await db.query(
+    const [customerResult] = await pool.query(
       `INSERT INTO customers 
         (CustFirstName, CustLastName, CustEmail, CustHomePhone, CustAddress, CustCity, CustProv, CustPostal, CustCountry) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -34,7 +34,7 @@ export async function POST(req) {
     const customerId = customerResult.insertId;
 
     // 2. Insert booking
-    await db.query(
+    await pool.query(
       `INSERT INTO bookings 
         (BookingDate, BookingNo, CustomerId, TripStart, TripEnd, Destination, BasePrice, PackageId, TotalPrice) 
        VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -52,7 +52,7 @@ export async function POST(req) {
 
     // 3. Optional: Insert additional travelers
     for (const traveler of additionalTravelers) {
-      await db.query(
+      await pool.query(
         `INSERT INTO customers
           (CustFirstName, CustLastName, CustEmail, CustHomePhone) 
          VALUES (?, ?, ?, ?, LAST_INSERT_ID())`,

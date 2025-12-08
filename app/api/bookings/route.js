@@ -1,9 +1,10 @@
-import db from "@/app/lib/database"; // your MySQL connection
+import {getPool} from "@/app/lib/database"; // your MySQL connection
 import { NextResponse } from "next/server";
+import { useEffect } from "react";
 
 export async function POST(req) {
   const data = await req.json();
-
+  const pool = await getPool();
   try {
     const {
       primaryTraveler,
@@ -14,7 +15,7 @@ export async function POST(req) {
     } = data;
 
     // 1. Insert primary traveler
-    const [customerResult] = await db.query(
+    const [customerResult] = await pool.query(
       `INSERT INTO customers 
         (CustFirstName, CustLastName, CustEmail, CustHomePhone, CustAddress, CustCity, CustProv, CustPostal, CustCountry) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -36,7 +37,7 @@ export async function POST(req) {
 
     // 2. Insert booking
     const bookingNo = generateBookingNo();
-    const [bookingResult] = await db.query(
+    const [bookingResult] = await pool.query(
       `INSERT INTO bookings
         (BookingDate, BookingNo, CustomerId) 
        VALUES (NOW(), ?, ?)`,
@@ -56,7 +57,7 @@ export async function POST(req) {
 
     // 3. Insert additional travelers (optional)
     for (const traveler of additionalTravelers) {
-      await db.query(
+      await pool.query(
         `INSERT INTO customers 
           (CustFirstName, CustLastName, CustEmail, CustHomePhone, BookingId) 
          VALUES (?, ?, ?, ?, ?)`,
@@ -78,6 +79,7 @@ export async function POST(req) {
 }
 
 function generateBookingNo(length = 8) {
+ 
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   for (let i = 0; i < length; i++) {
