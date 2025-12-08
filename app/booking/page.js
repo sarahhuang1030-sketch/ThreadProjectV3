@@ -14,7 +14,7 @@ const abrilFatface = Abril_Fatface({
   variable: "--font-abril-fatface", // Optional: for CSS variable usage
 });
 
-export default function BookingPage({useSearchParams}) {
+export default function BookingPage({SearchParams}) {
   const router = useRouter();
 
   // Package parameters from URL
