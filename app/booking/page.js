@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -14,14 +14,13 @@ const abrilFatface = Abril_Fatface({
   variable: "--font-abril-fatface", // Optional: for CSS variable usage
 });
 
-export default function BookingPage() {
+export default function BookingPage({useSearchParams}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Package parameters from URL
-  const packageId = searchParams.get("packageId");
-  const price = searchParams.get("price");
-  const pkgName = searchParams.get("name");
+  const packageId = searchParams?.packageId;
+  const price = searchParams?.price;
+  const pkgName = searchParams?.name;
 
   // Package details state
   const [packageDetails, setPackageDetails] = useState({
