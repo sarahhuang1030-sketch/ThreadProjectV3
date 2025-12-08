@@ -1,18 +1,17 @@
-//import { getAllEmployees } from "../lib/employees";
-//import StatsCard from "../components/StatsCard";
-//import EmployeeList from "../components/EmployeeList";
-
 import AgencyList from "../components/AgencyList";
 import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
-
 import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
+// import ContactMap from "./ContactMap";
 
-import ContactMap from "./ContactMap";
+import dynamic from "next/dynamic";
+
+const ContactMap = dynamic(
+  () => import("./ContactMap"),
+  { ssr: false }
+);
 
 const abrilFatface = Abril_Fatface({
   weight: ["400"],
