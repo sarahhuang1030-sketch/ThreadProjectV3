@@ -1,6 +1,6 @@
 import {getPool} from "@/app/lib/database"; // your MySQL connection
 import { NextResponse } from "next/server";
-import { useEffect } from "react";
+
 
 export async function POST(req) {
   const data = await req.json();

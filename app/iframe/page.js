@@ -1,4 +1,4 @@
-import ContactMap from "../components/ContactMap";
+import ContactMap from "@app/contact/ContactMap";
 import { getAgency } from "../lib/agencies";
 
 export default async function IframePage() {
