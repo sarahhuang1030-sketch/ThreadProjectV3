@@ -5,6 +5,10 @@ import { HeadingPic } from "../components/Heading";
 import { getCustomers } from "../lib/agencies";
 import RegisterPage from "../components/RegisterPage";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
+
 export default async function Registration() {
   const customers = await getCustomers();
   return (
