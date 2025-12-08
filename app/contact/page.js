@@ -8,10 +8,10 @@ import { getAgency, getAgentsbyId1, getAgentsbyId2 } from "../lib/agencies";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
-import { UserCommentAction } from "../lib/action";
+
 import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
-import Iframe from "./ContactMap";
+
 import ContactMap from "./ContactMap";
 
 const abrilFatface = Abril_Fatface({
