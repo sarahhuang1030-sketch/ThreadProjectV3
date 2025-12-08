@@ -5,6 +5,7 @@ import { HeadingPic } from "../components/Heading";
 import { getCustomers } from "../lib/agencies";
 import RegisterPage from "../components/RegisterPage";
 
+// Force the page to be dynamically rendered on each request
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
