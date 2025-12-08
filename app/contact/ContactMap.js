@@ -1,14 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-//import AgencyList from "../components/AgencyList";
-//import AgencyList from "../components/AgencyList";
-//import { getAgency } from "../lib/agencies";
+
+import { useEffect, useState, useRef } from "react";
 
 export default function ContactMap() {
-  const [activeLocation, setActiveLocation] = useState(-1);
+  const [activeLocation, setActiveLocation] = useState(null);
   const [agencies, setAgencies] = useState([]);
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const scriptLoadedRef = useRef(false);
 
+  // 1️⃣ Fetch agencies (client-safe)
   useEffect(() => {
     async function fetchAgencies() {
       try {
@@ -17,88 +17,82 @@ export default function ContactMap() {
         const data = await res.json();
         setAgencies(data);
       } catch (err) {
-        console.error("Error Loading Agency", err);
+        console.error("Error loading agencies:", err);
       }
     }
+
     fetchAgencies();
-
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-    // Prevent duplicate script injection
-    if (
-      !document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')
-    ) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=maps,marker&v=beta`;
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-
-      script.onload = () => {
-        // attachMarkerListeners();
-        setMapLoaded(true);
-      };
-    } else {
-      // If script already loaded, attach listeners immediately
-      //attachMarkerListeners();
-      setMapLoaded(true);
-    }
   }, []);
 
+  // 2️⃣ Load Google Maps script SAFELY
   useEffect(() => {
-    if (!mapLoaded) {
+    if (typeof window === "undefined") return;
+    if (scriptLoadedRef.current) {
+      setMapReady(true);
       return;
     }
-    //wait for a bit for the markers to be fully initialized
-    const timeoutId = setTimeout(() => {
-      attachMarkerListeners();
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [mapLoaded]);
 
-  function attachMarkerListeners() {
-    const calgaryMarker = document.querySelector(
-      'gmp-advanced-marker[title="Calgary"]'
-    );
-    const okotoksMarker = document.querySelector(
-      'gmp-advanced-marker[title="Okotoks"]'
+    const existingScript = document.querySelector(
+      'script[src*="maps.googleapis.com/maps/api/js"]'
     );
 
-    if (calgaryMarker) {
-      calgaryMarker.setAttribute("gmp-clickable", "");
-      calgaryMarker.addEventListener("gmp-click", () => {
-        setActiveLocation(1);
-      });
+    if (existingScript) {
+      scriptLoadedRef.current = true;
+      setMapReady(true);
+      return;
     }
 
-    if (okotoksMarker) {
-      okotoksMarker.setAttribute("gmp-clickable", "");
-      okotoksMarker.addEventListener("gmp-click", () => {
-        setActiveLocation(2);
-      });
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.error("Google Maps API key missing");
+      return;
     }
-  }
 
-  const renderPopupContent = () => {
-    if (!Array.isArray(agencies)) return null;
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=maps,marker&v=beta`;
+    script.async = true;
+    script.defer = true;
 
-    const agency = agencies.find((a) => a.AgencyId === activeLocation);
-    if (!agency) return null;
+    script.onload = () => {
+      scriptLoadedRef.current = true;
+      setMapReady(true);
+    };
 
-    return (
-      <div>
-        <strong>{agency.AgncyCity}</strong>
+    document.body.appendChild(script);
+  }, []);
 
-        <p>
-          Address: {agency.AgncyAddress}
-          <br />
-          Phone: {agency.AgncyPhone}
-          <br />
-          Fax: {agency.AgncyFax}
-        </p>
-      </div>
-    );
-  };
+  // 3️⃣ Attach marker listeners once map is ready
+  useEffect(() => {
+    if (!mapReady) return;
+
+    const attach = () => {
+      const calgary = document.querySelector(
+        'gmp-advanced-marker[title="Calgary"]'
+      );
+      const okotoks = document.querySelector(
+        'gmp-advanced-marker[title="Okotoks"]'
+      );
+
+      if (calgary) {
+        calgary.setAttribute("gmp-clickable", "");
+        calgary.onclick = () => setActiveLocation(1);
+      }
+
+      if (okotoks) {
+        okotoks.setAttribute("gmp-clickable", "");
+        okotoks.onclick = () => setActiveLocation(2);
+      }
+    };
+
+    // Slight delay to ensure markers exist
+    const t = setTimeout(attach, 300);
+    return () => clearTimeout(t);
+  }, [mapReady]);
+
+  // 4️⃣ Popup content
+  const agency = agencies.find(
+    (a) => a.AgencyId === activeLocation
+  );
 
   return (
     <div style={{ height: "480px", width: "90%", position: "relative" }}>
@@ -111,19 +105,19 @@ export default function ContactMap() {
         <gmp-advanced-marker
           position="51.0449,-114.0719"
           title="Calgary"
-        ></gmp-advanced-marker>
+        />
         <gmp-advanced-marker
           position="50.7257,-113.9749"
           title="Okotoks"
-        ></gmp-advanced-marker>
+        />
       </gmp-map>
 
-      {activeLocation && (
+      {agency && (
         <div
           style={{
             position: "absolute",
             top: "0px",
-            left: "1115px",
+            right: "-270px",
             background: "white",
             width: "250px",
             padding: "10px 20px",
@@ -132,7 +126,14 @@ export default function ContactMap() {
             zIndex: 1000,
           }}
         >
-          {renderPopupContent()}
+          <strong>{agency.AgncyCity}</strong>
+          <p>
+            Address: {agency.AgncyAddress}
+            <br />
+            Phone: {agency.AgncyPhone}
+            <br />
+            Fax: {agency.AgncyFax}
+          </p>
         </div>
       )}
     </div>
