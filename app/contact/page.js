@@ -6,6 +6,7 @@ import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
 import ContactMapClient from "./ContactMapClient";
 
+export const dynamic = "force-dynamic";
 
 
 const abrilFatface = Abril_Fatface({
