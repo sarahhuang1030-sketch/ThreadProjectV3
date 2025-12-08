@@ -4,7 +4,7 @@ import { Abril_Fatface } from "next/font/google";
 import AgentsList from "../components/AgentsList";
 import { HeadingPic } from "../components/Heading";
 import ContactForm from "./ContactForm";
-import ContactMapClient from "./ContactMapClient ";
+import ContactMapClient from "./ContactMapClient";
 
 
 
