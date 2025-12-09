@@ -24,12 +24,12 @@ const getExpiredImages = () => [
 
 export default function PackageList({ packages = [],titleKey }) {
    const {t} = useLanguage();
-  // const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-  // useEffect(() => {
-  //   import("bootstrap/dist/js/bootstrap.bundle.min.js");
-  //   setIsClient(true);
-  // }, []);
+  useEffect(() => {
+    import("bootstrap/dist/js/bootstrap.bundle.min.js");
+    setIsClient(true);
+  }, []);
 
   if (!Array.isArray(packages)) {
     console.error("Invalid packages data:", packages);
