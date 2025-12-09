@@ -24,19 +24,17 @@ import sql from "mssql";
 
 
 // IMPORTANT: Use a *promise* instead of a pool object
-let poolPromise = null;
+let poolPromise;
 
 
 
 export async function getPool() {
-  // ✅ build-time / prerender safety
-  if (process.env.NEXT_PHASE === "phase-production-build") {
-    console.warn("⚠️ Skipping DB connection during build");
-    return null;
-  }
+  // ✅ absolute SSR safety
+  if (typeof window !== "undefined") return null;
 
+  // ✅ runtime env guard
   if (!process.env.AZURE_SQL_CONNECTION) {
-    console.warn("⚠️ AZURE_SQL_CONNECTION missing at runtime");
+    console.warn("⚠️ AZURE_SQL_CONNECTION not available");
     return null;
   }
 

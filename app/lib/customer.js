@@ -1,58 +1,49 @@
-import {getPool } from "./database.js";
-//get all customers
+import { getPool } from "./database.js";
 
+/* ---------------- CUSTOMERS ---------------- */
+
+// Get all customers
 export async function getCustomer() {
-  try {
-    const pool = await getPool();
-    if (!pool) {
-  return []; // ✅ prevents crash
+  const pool = await getPool();
+
+  const result = await pool
+    .request()
+    .query(`SELECT * FROM customers`);
+
+  return result.recordset;
 }
-    const customers = await pool.request().query(`SELECT * FROM customers`);
-    // return all customers (array)
-    return customers.recordset;
-  } catch (error) {
-    console.error("Error fetching customer:", error);
-    throw error;
-  }
-}
-//get customer by id
+
+// Get customer by ID
 export async function getCustomerById(id) {
-  try {
-    const pool = await getPool();
-if (!pool) {
-  return []; // ✅ prevents crash
-}
-    const result = await pool
-      .request()
-      .input("id", id)
-      .query(`
-        SELECT *
-        FROM customers
-        WHERE CustomerId = @id
-      `);
+  const pool = await getPool();
 
-    if (result.recordset.length === 0) return null;
+  const result = await pool
+    .request()
+    .input("id", id)
+    .query(`
+      SELECT *
+      FROM customers
+      WHERE CustomerId = @id
+    `);
 
-    return result.recordset[0];
-  } catch (error) {
-    console.error("Error fetching customer by id:", error);
-    throw error;
-  }
+  return result.recordset[0] || null;
 }
-//create a new customer
-export async function createCustomer({
-  CustFirstName,
-  CustLastName,
-  CustAddress,
-  CustCity,
-  CustProv,
-  CustPostal,
-  CustCountry,
-  CustHomePhone,
-  CustBusPhone,
-  CustEmail,
-}) {
-  // Required fields validation
+
+// Create a new customer
+export async function createCustomer(customer) {
+  const {
+    CustFirstName,
+    CustLastName,
+    CustAddress,
+    CustCity,
+    CustProv,
+    CustPostal,
+    CustCountry,
+    CustHomePhone,
+    CustBusPhone,
+    CustEmail,
+  } = customer;
+
   if (
     !CustFirstName?.trim() ||
     !CustLastName?.trim() ||
@@ -69,22 +60,16 @@ export async function createCustomer({
   }
 
   const pool = await getPool();
-if (!pool) {
-  return []; // ✅ prevents crash
-}
-  // Check if email already exists
-  const existingEmail = await pool
+
+  const existing = await pool
     .request()
     .input("CustEmail", CustEmail)
-    .query(
-      `SELECT CustomerId FROM customers WHERE CustEmail = @CustEmail`
-    );
+    .query(`SELECT CustomerId FROM customers WHERE CustEmail = @CustEmail`);
 
-  if (existingEmail.recordset.length > 0) {
+  if (existing.recordset.length > 0) {
     throw new Error("Customer with this email already exists");
   }
 
-  // Insert customer & return new ID
   const result = await pool
     .request()
     .input("CustFirstName", CustFirstName)
@@ -111,10 +96,10 @@ if (!pool) {
 
   return { id: result.recordset[0].CustomerId };
 }
-//update customer
-export async function updateCustomer(
-  id,
-  {
+
+// Update customer
+export async function updateCustomer(id, customer) {
+  const {
     CustFirstName,
     CustLastName,
     CustAddress,
@@ -125,9 +110,8 @@ export async function updateCustomer(
     CustHomePhone,
     CustBusPhone,
     CustEmail,
-  }
-) {
-  // Validate required fields
+  } = customer;
+
   if (
     !CustFirstName?.trim() ||
     !CustLastName?.trim() ||
@@ -144,26 +128,22 @@ export async function updateCustomer(
   }
 
   const pool = await getPool();
-if (!pool) {
-  return []; // ✅ prevents crash
-}
-  // Check if email is used by another customer
-  const existingEmail = await pool
+
+  const existing = await pool
     .request()
     .input("CustEmail", CustEmail)
     .input("CustomerId", id)
     .query(`
-      SELECT CustomerId 
-      FROM customers 
+      SELECT CustomerId
+      FROM customers
       WHERE CustEmail = @CustEmail AND CustomerId <> @CustomerId
     `);
 
-  if (existingEmail.recordset.length > 0) {
+  if (existing.recordset.length > 0) {
     throw new Error("Customer with this email already exists");
   }
 
-  // Perform update
-  const result = await pool
+  await pool
     .request()
     .input("CustFirstName", CustFirstName)
     .input("CustLastName", CustLastName)
@@ -177,8 +157,7 @@ if (!pool) {
     .input("CustEmail", CustEmail)
     .input("CustomerId", id)
     .query(`
-      UPDATE customers
-      SET
+      UPDATE customers SET
         CustFirstName = @CustFirstName,
         CustLastName = @CustLastName,
         CustAddress = @CustAddress,
@@ -189,19 +168,19 @@ if (!pool) {
         CustHomePhone = @CustHomePhone,
         CustBusPhone = @CustBusPhone,
         CustEmail = @CustEmail
-      WHERE CustomerId = @CustomerId;
+      WHERE CustomerId = @CustomerId
     `);
 
-  return { id }; // return updated ID
+  return { id };
 }
 
+// Minimal customer creation
 export async function createCustomer2({
   CustFirstName,
   CustLastName,
   CustHomePhone,
   CustEmail,
 }) {
-  // Validate required fields
   if (
     !CustFirstName?.trim() ||
     !CustLastName?.trim() ||
@@ -212,24 +191,16 @@ export async function createCustomer2({
   }
 
   const pool = await getPool();
-if (!pool) {
-  return []; // ✅ prevents crash
-}
-  // Check if email already exists
+
   const existing = await pool
     .request()
     .input("CustEmail", CustEmail)
-    .query(`
-      SELECT CustomerId 
-      FROM customers 
-      WHERE CustEmail = @CustEmail
-    `);
+    .query(`SELECT CustomerId FROM customers WHERE CustEmail = @CustEmail`);
 
   if (existing.recordset.length > 0) {
     throw new Error("Customer with this email already exist");
   }
 
-  // Insert new customer
   const result = await pool
     .request()
     .input("CustFirstName", CustFirstName)
@@ -238,20 +209,19 @@ if (!pool) {
     .input("CustEmail", CustEmail)
     .query(`
       INSERT INTO customers (
-        CustFirstName, 
-        CustLastName,  
-        CustHomePhone, 
+        CustFirstName,
+        CustLastName,
+        CustHomePhone,
         CustEmail
       )
       OUTPUT INSERTED.CustomerId
       VALUES (
-        @CustFirstName, 
-        @CustLastName,  
-        @CustHomePhone, 
+        @CustFirstName,
+        @CustLastName,
+        @CustHomePhone,
         @CustEmail
       );
     `);
 
-  // Return inserted ID
   return { id: result.recordset[0].CustomerId };
 }
