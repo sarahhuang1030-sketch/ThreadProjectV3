@@ -36,7 +36,7 @@ export async function getPool() {
 
   try {
     pool = await sql.connect(conn);
-    console.log("✅ Azure SQL connected");
+    console.log("✅ Azure SQL connected, Yes!");
     return pool;
   } catch (err) {
     console.error("❌ SQL connection failed:", err);
