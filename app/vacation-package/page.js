@@ -1,24 +1,17 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import PackageList from "../components/PackageList";
-import { HeadingPic } from "../components/Heading";
-
 export const dynamic = "force-dynamic";
 
-export default function VacationPackagePage() {
-  const [activePackages, setActivePackages] = useState([]);
-  const [expiredPackages, setExpiredPackages] = useState([]);
+import PackageList from "../components/PackageList";
+import { HeadingPic } from "../components/Heading";
+import {
+  getAllpackageDetails,
+  getExpiredPackages,
+} from "@/app/lib/package";
 
-  useEffect(() => {
-    fetch("/api/packages")
-      .then(res => res.json())
-      .then(data => {
-        setActivePackages(data.activePackages || []);
-        setExpiredPackages(data.expiredPackages || []);
-      })
-      .catch(console.error);
-  }, []);
+export default async function VacationPackagePage() {
+  const [activePackages, expiredPackages] = await Promise.all([
+    getAllpackageDetails(),
+    getExpiredPackages(),
+  ]);
 
   return (
     <>
