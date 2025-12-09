@@ -1,19 +1,16 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useState, useEffect } from "react";
 // import "./sarahstyle.css";
 // import "./nikitha.css";
 //import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { Abril_Fatface } from "next/font/google";
 import { HeadingPic } from "./components/Heading";
 import { useLanguage, LanguageProvider } from "./context/languagecontext";
 
-
+export const dynamic = "force-dynamic";
 
 
 const abrilFatface = Abril_Fatface({

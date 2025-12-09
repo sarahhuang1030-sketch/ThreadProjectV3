@@ -1,17 +1,23 @@
-"use Client";
+"use client";
 import { useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "./context/usercontext";
+import { Abril_Fatface } from "next/font/google";
+
+const abrilFatface = Abril_Fatface({
+  weight: ["400"],
+  subsets: ["latin"],
+});
+
 
 export default function Heading() {
   const { user, setUser } = useUser();
   useEffect(() => {
-    // Always read from localStorage on mount
-    const storedName = localStorage.getItem("CustFirstName");
-    if (storedName && !user) {
-      setUser(storedName);
-    }
-  }, []);
+  const storedName = localStorage.getItem("CustFirstName");
+  if (storedName && !user) {
+    setUser(storedName);
+  }
+}, [user, setUser]);
 
   return (
     <header className={`bg-body-tertiary py-4  ${abrilFatface.className}`}>

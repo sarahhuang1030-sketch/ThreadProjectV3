@@ -15,7 +15,7 @@ export default function ContactMap() {
         const res = await fetch("/api/agencies");
         if (!res.ok) throw new Error("Failed to fetch agency");
         const data = await res.json();
-        setAgencies(data);
+        setAgencies(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error loading agencies:", err);
       }

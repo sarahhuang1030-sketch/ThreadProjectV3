@@ -59,7 +59,7 @@ export default function BookingPage({searchParams}) {
   const [customers, setCustomers] = useState([
     {
       firstname: formData.CustFirstName,
-      endname: formData.CustEndName,
+      lastname: formData.CustLastName,
       address: formData.CustAddress,
       city: formData.CustCity,
       province: formData.CustProv,
@@ -75,7 +75,7 @@ export default function BookingPage({searchParams}) {
       ...customers,
       {
         firstname: "",
-        endname: "",
+        lastname: "",
         address: "",
         city: "",
         province: "",
@@ -409,7 +409,7 @@ export default function BookingPage({searchParams}) {
                       onChange={(e) =>
                         handleCustomerChange(
                           index,
-                          "CustAdress",
+                          "CustAddress",
                           e.target.value
                         )
                       }
