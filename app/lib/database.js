@@ -21,37 +21,22 @@
 
 import sql from "mssql";
 
-
-
-// IMPORTANT: Use a *promise* instead of a pool object
-let poolPromise;
-
-
+let pool;
 
 export async function getPool() {
-  // ✅ absolute SSR safety
-  if (typeof window !== "undefined") return null;
+  if (pool) return pool;
 
-  // ✅ runtime env guard
-  if (!process.env.AZURE_SQL_CONNECTION) {
+  const conn = process.env.AZURE_SQL_CONNECTION;
+  if (!conn) {
     console.warn("⚠️ AZURE_SQL_CONNECTION not available");
     return null;
   }
 
-  if (!poolPromise) {
-    poolPromise = sql
-      .connect(process.env.AZURE_SQL_CONNECTION)
-      .then(pool => {
-        console.log("✅ Connected to Azure SQL");
-        return pool;
-      })
-      .catch(err => {
-        poolPromise = null;
-        console.error("❌ SQL Connection Failed:", err);
-        throw err;
-      });
+  try {
+    pool = await sql.connect(conn);
+    return pool;
+  } catch (err) {
+    console.error("❌ SQL connection failed:", err);
+    return null;
   }
-
-  return poolPromise;
 }
-

@@ -1,15 +1,24 @@
-import { getAllpackageDetails, getExpiredPackages } from "@/app/lib/package";
+"use client";
+
+import { useEffect, useState } from "react";
 import PackageList from "../components/PackageList";
 import { HeadingPic } from "../components/Heading";
-import { Abril_Fatface } from "next/font/google";
-//import { useLanguage } from "../context/languagecontext";
 
-export default async function HomePage() {
-  
-  const [activePackages, expiredPackages] = await Promise.all([
-    getAllpackageDetails(),
-    getExpiredPackages(),
-  ]);
+export const dynamic = "force-dynamic";
+
+export default function VacationPackagePage() {
+  const [activePackages, setActivePackages] = useState([]);
+  const [expiredPackages, setExpiredPackages] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/packages")
+      .then(res => res.json())
+      .then(data => {
+        setActivePackages(data.activePackages || []);
+        setExpiredPackages(data.expiredPackages || []);
+      })
+      .catch(console.error);
+  }, []);
 
   return (
     <>
@@ -17,16 +26,19 @@ export default async function HomePage() {
 
       <div className="container py-4">
         <div className="bg-white p-4">
-          <h4 className="mb-3 title"> </h4>
-          
-          <PackageList packages={activePackages} titleKey="hot_deal_on_now"/>
+          <PackageList
+            packages={activePackages}
+            titleKey="hot_deal_on_now"
+          />
         </div>
       </div>
 
       <div className="container py-4">
         <div className="bg-white p-4">
-          <h4 className="mb-3 title"></h4>
-          <PackageList packages={expiredPackages} titleKey="explore_our_past_packages" />
+          <PackageList
+            packages={expiredPackages}
+            titleKey="explore_our_past_packages"
+          />
         </div>
       </div>
     </>

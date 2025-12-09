@@ -1,8 +1,9 @@
-import { getPool } from "./database.js";
+import { getPool } from "./database";
 
-// ✅ Get all ACTIVE packages
+// Active packages
 export async function getAllpackageDetails() {
   const pool = await getPool();
+  if (!pool) return [];
 
   const result = await pool.request().query(`
     SELECT *
@@ -10,12 +11,13 @@ export async function getAllpackageDetails() {
     WHERE PkgEndDate >= CAST(GETDATE() AS DATE)
   `);
 
-  return result.recordset;
+  return result.recordset ?? [];
 }
 
-// ✅ Get EXPIRED packages
+// Expired packages
 export async function getExpiredPackages() {
   const pool = await getPool();
+  if (!pool) return [];
 
   const result = await pool.request().query(`
     SELECT *
@@ -23,5 +25,5 @@ export async function getExpiredPackages() {
     WHERE PkgEndDate < CAST(GETDATE() AS DATE)
   `);
 
-  return result.recordset;
+  return result.recordset ?? [];
 }
