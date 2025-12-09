@@ -116,8 +116,8 @@ export default function ContactMap() {
         <div
           style={{
             position: "absolute",
-            top: "0px",
-            right: "-270px",
+            top: "10px",
+            right: "20px",
             background: "white",
             width: "250px",
             padding: "10px 20px",
@@ -126,6 +126,22 @@ export default function ContactMap() {
             zIndex: 1000,
           }}
         >
+           <button
+      onClick={() => setActiveLocation(null)}
+      style={{
+        position: "absolute",
+        top: "6px",
+        right: "8px",
+        border: "none",
+        background: "transparent",
+        fontSize: "16px",
+        cursor: "pointer",
+        fontWeight: "bold",
+      }}
+      aria-label="Close"
+    >
+      ✕
+    </button>
           <strong>{agency.AgncyCity}</strong>
           <p>
             Address: {agency.AgncyAddress}
