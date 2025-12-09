@@ -24,6 +24,8 @@ import sql from "mssql";
 let pool;
 
 export async function getPool() {
+  console.log("AZURE_SQL_CONNECTION exists:", !!process.env.AZURE_SQL_CONNECTION);
+
   if (pool) return pool;
 
   const conn = process.env.AZURE_SQL_CONNECTION;
