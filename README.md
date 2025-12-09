@@ -17,6 +17,7 @@ This project demonstrates real-world authentication, database integration, inter
 <img width="1918" height="947" alt="Screenshot 2025-12-09 094235" src="https://github.com/user-attachments/assets/c5ed3f08-12a4-46d8-8567-66249d5e6bbb" />
 <img width="1919" height="947" alt="Screenshot 2025-12-09 094251" src="https://github.com/user-attachments/assets/f7c1d932-96d3-4ac6-babe-1fdf77c4cb42" />
 
+---
 
 **Travel Experts** allows users to:
 - Browse active & expired vacation packages
