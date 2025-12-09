@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import "./sarahstyle.css";
 // import "./nikitha.css";
 //import Link from "next/link";
