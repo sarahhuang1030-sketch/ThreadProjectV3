@@ -6,6 +6,9 @@ export async function POST(req) {
   const data = await req.json();
   const pool = await getPool();
   try {
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     const {
       primaryTraveler,
       additionalTravelers,

@@ -24,7 +24,9 @@ export async function POST(req) {
 
     const rows = result.recordset;
     const success = rows.length > 0;
-    
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     if (success) {
       return NextResponse.json({ success: success, user: rows[0] });
     } else {

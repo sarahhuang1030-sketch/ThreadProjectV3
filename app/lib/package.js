@@ -4,6 +4,9 @@ import {getPool } from "./database.js";
 export async function getAllpackageDetails() {
   try {
     const pool = await getPool();
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
  const result = await pool
       .request()
       .query(`
@@ -23,7 +26,9 @@ export async function getAllpackageDetails() {
 export async function getExpiredPackages() {
   try {
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .query(`

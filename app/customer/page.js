@@ -1,13 +1,16 @@
+// Force the page to be dynamically rendered on each request
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
+
 //import Link from "next/link";
 import "bootstrap/dist/css/bootstrap.min.css";
-//import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import { HeadingPic } from "../components/Heading";
 import { getCustomers } from "../lib/agencies";
 import RegisterPage from "../components/RegisterPage";
 
-// Force the page to be dynamically rendered on each request
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
+
 
 
 export default async function Registration() {

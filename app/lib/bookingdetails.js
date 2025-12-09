@@ -4,7 +4,9 @@ import {getPool } from "./database.js";
 export async function getAllbookingdetails() {
   try {
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .query(`
@@ -23,7 +25,9 @@ export async function getAllbookingdetails() {
 export async function getBookingDetailById(id) {
   try {
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .input("Id", id)
@@ -60,7 +64,9 @@ export async function createBooking(bookingData) {
     } = bookingData;
 
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .input("BookingDetailId", BookingDetailId)

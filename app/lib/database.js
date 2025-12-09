@@ -29,21 +29,29 @@ let poolPromise = null;
 
 
 export async function getPool() {
-  // ✅ HARD STOP if env variable is missing
-  if (!process.env.AZURE_SQL_CONNECTION) {
-    throw new Error("AZURE_SQL_CONNECTION is not defined");
+  // ✅ build-time / prerender safety
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    console.warn("⚠️ Skipping DB connection during build");
+    return null;
   }
 
-  // ✅ Reuse existing pool
+  if (!process.env.AZURE_SQL_CONNECTION) {
+    console.warn("⚠️ AZURE_SQL_CONNECTION missing at runtime");
+    return null;
+  }
+
   if (!poolPromise) {
-    try {
-      poolPromise = sql.connect(process.env.AZURE_SQL_CONNECTION);
-      console.log("✅ Connected to Azure SQL");
-    } catch (err) {
-      poolPromise = null; // allow retry later
-      console.error("❌ SQL Connection Failed", err);
-      throw err;
-    }
+    poolPromise = sql
+      .connect(process.env.AZURE_SQL_CONNECTION)
+      .then(pool => {
+        console.log("✅ Connected to Azure SQL");
+        return pool;
+      })
+      .catch(err => {
+        poolPromise = null;
+        console.error("❌ SQL Connection Failed:", err);
+        throw err;
+      });
   }
 
   return poolPromise;

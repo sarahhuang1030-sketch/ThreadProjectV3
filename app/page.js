@@ -1,7 +1,6 @@
 "use client";
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
 
+export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 // import "./sarahstyle.css";
@@ -9,10 +8,11 @@ import { useState } from "react";
 //import Link from "next/link";
 import Image from "next/image";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import { Abril_Fatface } from "next/font/google";
 import { HeadingPic } from "./components/Heading";
 import { useLanguage, LanguageProvider } from "./context/languagecontext";
+
 
 
 
@@ -177,6 +177,11 @@ export default function HomePage() {
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const {t} = useLanguage();
+
+  useEffect(() => {
+  import("bootstrap/dist/js/bootstrap.bundle.min.js");
+}, []);
+
   return (
     <>
       {/* page wide picture */}

@@ -1,7 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { getAllbookings } from "@/app/lib/bookings";
 import BookingForm from "@/app/components/bookingForm";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function BookingsPage() {
   const bookings = await getAllbookings();

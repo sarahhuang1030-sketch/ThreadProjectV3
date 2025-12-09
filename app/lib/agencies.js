@@ -10,6 +10,9 @@ export async function getAgency() {
 
      //this is for Azure
     const pool = await getPool();
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool.request().query("SELECT * FROM Agencies");
     return result.recordset; // THIS is your rows array
   } catch (error) {
@@ -26,6 +29,9 @@ export async function getAgentsbyId1() {
 
      //This is for Azure
     const pool = await getPool();
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool.request().query("SELECT * FROM agents WHERE AgencyId =1");
 
     return result.recordset;
@@ -40,6 +46,9 @@ export async function getAgentsbyId2() {
     // const [agents] = await db.query("SELECT * FROM agents WHERE AgencyId =2");
     // return agents;
     const pool = await getPool();
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool.request().query("SELECT * FROM agents WHERE AgencyId =2");
 
     return result.recordset;
@@ -52,6 +61,9 @@ export async function getAgentsbyId2() {
 export async function createUser({ name, phone, email, message }) {
   
   const pool = await getPool();
+  if (!pool) {
+  return []; // ✅ prevents crash
+}
   //check if name and email are undefined
   //these are required fields
   if (!name?.trim() || !phone?.trim() || !email?.trim() || !message?.trim())
@@ -86,7 +98,9 @@ export async function getCustomers() {
   
     try {
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .query("SELECT * FROM customers");
@@ -122,7 +136,9 @@ export async function createCustomers({
   }
 
   const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
   // CHECK IF EMAIL ALREADY EXISTS
   const existing = await pool
     .request()

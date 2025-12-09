@@ -12,7 +12,9 @@ export async function POST(req) {
       totalPrice,
       travelDates,
     } = data;
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     // 1. Insert primary traveler
     const [customerResult] = await pool.query(
       `INSERT INTO customers 

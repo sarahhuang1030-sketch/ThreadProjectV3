@@ -4,6 +4,9 @@ import {getPool } from "./database.js";
 export async function getCustomer() {
   try {
     const pool = await getPool();
+    if (!pool) {
+  return []; // ✅ prevents crash
+}
     const customers = await pool.request().query(`SELECT * FROM customers`);
     // return all customers (array)
     return customers.recordset;
@@ -16,7 +19,9 @@ export async function getCustomer() {
 export async function getCustomerById(id) {
   try {
     const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
     const result = await pool
       .request()
       .input("id", id)
@@ -64,7 +69,9 @@ export async function createCustomer({
   }
 
   const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
   // Check if email already exists
   const existingEmail = await pool
     .request()
@@ -137,7 +144,9 @@ export async function updateCustomer(
   }
 
   const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
   // Check if email is used by another customer
   const existingEmail = await pool
     .request()
@@ -203,7 +212,9 @@ export async function createCustomer2({
   }
 
   const pool = await getPool();
-
+if (!pool) {
+  return []; // ✅ prevents crash
+}
   // Check if email already exists
   const existing = await pool
     .request()
