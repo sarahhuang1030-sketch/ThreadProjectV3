@@ -1,4 +1,8 @@
 "use client";
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
+
 import { useState } from "react";
 // import "./sarahstyle.css";
 // import "./nikitha.css";
@@ -9,6 +13,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Abril_Fatface } from "next/font/google";
 import { HeadingPic } from "./components/Heading";
 import { useLanguage, LanguageProvider } from "./context/languagecontext";
+
 
 
 const abrilFatface = Abril_Fatface({
@@ -167,7 +172,7 @@ export function TabSection({
   );
 }
 
-export default function RootLayout() {
+export default function HomePage() {
   const [inputType, setInputType] = useState("text");
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
